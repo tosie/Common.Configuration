@@ -191,6 +191,7 @@ namespace Common.Configuration {
             // Position inside table
             Table.SetCellPosition(lbl, new TableLayoutPanelCellPosition(0, Row));
             if (GroupHeader) {
+                lbl.Margin = new Padding(10, (Row == 0 ? 0 : 10), 0, 0);
                 lbl.Font = new Font(lbl.Font.FontFamily, lbl.Font.Size * 1.2f, FontStyle.Bold);
                 lbl.TextAlign = ContentAlignment.MiddleLeft;
                 Table.SetColumnSpan(lbl, 2);
@@ -369,7 +370,8 @@ namespace Common.Configuration {
         }
 
         void control_Leave(object sender, EventArgs e) {
-            UpdateControlWithNewValue((sender as Control).Tag, new PropertyChangedEventArgs("Value"));
+            if (AutoSave)
+                UpdateControlWithNewValue((sender as Control).Tag, new PropertyChangedEventArgs("Value"));
         }
 
         #endregion
@@ -463,12 +465,16 @@ namespace Common.Configuration {
                 ConfigurationEntry entry = (ConfigurationEntry)control.Tag;
                 Object value = null;
                 Boolean value_extracted = false;
+                
                 try {
                     value = GetValueOfControl(control);
                     value_extracted = true;
                 } catch { }
-                if (value_extracted)
+
+                if (value_extracted) {
                     entry.Value = value;
+                    UpdateControlWithNewValue(entry, new PropertyChangedEventArgs("Value"));
+                }
             }
 
             Saving = false;
