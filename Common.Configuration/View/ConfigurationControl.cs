@@ -226,7 +226,8 @@ namespace Common.Configuration {
             object[] values = Entry.GetPossibleValues();
             if (values != null && values.Length > 0)
                 cbx.Items.AddRange(values);
-            cbx.SelectedIndex = cbx.Items.IndexOf(Entry.Value);
+            if (Entry.Value != null)
+                cbx.SelectedIndex = cbx.Items.IndexOf(Entry.Value);
             cbx.SelectedIndexChanged += new EventHandler(control_ValueChanged);
 
             return cbx;
