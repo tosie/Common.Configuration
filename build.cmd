@@ -11,7 +11,7 @@ goto do_build
 
 :do_build
 echo Building the project ...
-%msb% /property:Configuration=Release "%project%"
+%msb% /target:Rebuild /property:Configuration=Release "%project%"
 if errorlevel 1 goto build_error
 goto build_ok
 
@@ -41,4 +41,5 @@ pause
 exit 3
 
 :end
+pause
 exit 0

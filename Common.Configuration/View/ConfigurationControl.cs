@@ -72,12 +72,22 @@ namespace Common.Configuration {
             Int32 total_rows = 0;
             Dictionary<Object, List<ConfigurationEntry>> groups = new Dictionary<Object, List<ConfigurationEntry>>();
             foreach (ConfigurationEntry entry in Config) {
+                // Ignore entries that don't want to be edited or shown
+                if (entry.ControlType == ConfigurationEntry.ControlTypes.None)
+                    continue;
+
+                // Make sure that the object used as key in the dictionary is not null
+                Object group = (entry.GroupKey == null ? "" : entry.GroupKey);
+
+                // Initialize a new group in the dictionary
                 if (!groups.ContainsKey(entry.GroupKey)) {
                     groups[entry.GroupKey] = new List<ConfigurationEntry>();
                     total_rows++;
                 }
 
+                // Add the entry to the dictionary
                 groups[entry.GroupKey].Add(entry);
+
                 total_rows++;
             }
 
@@ -93,10 +103,13 @@ namespace Common.Configuration {
             // Create the necessary controls
             Int32 row = first_row;
             foreach (KeyValuePair<Object, List<ConfigurationEntry>> kv in groups) {
-                // Add a group heading
-                Object group = kv.Key;
-                AddHeadingToRow(group.ToString(), row, true);
-                row++;
+                // Add a group heading, if it is not empty
+                // (it is made sure that group is not null further up)
+                String group = kv.Key.ToString();
+                if (!String.IsNullOrEmpty(group)) {
+                    AddHeadingToRow(group, row, true);
+                    row++;
+                }
 
                 // Add the value rows
                 foreach (ConfigurationEntry entry in kv.Value) {
