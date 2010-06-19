@@ -187,10 +187,10 @@ namespace Common.Configuration.Test
         [TestMethod()]
         public void InputTypeTest() {
             ConfigurationEntry target = new ConfigurationEntry(); // TODO: Initialize to an appropriate value
-            ConfigurationEntry.InputTypeEnum expected = new ConfigurationEntry.InputTypeEnum(); // TODO: Initialize to an appropriate value
-            ConfigurationEntry.InputTypeEnum actual;
-            target.InputType = expected;
-            actual = target.InputType;
+            ConfigurationEntry.ControlTypes expected = new ConfigurationEntry.ControlTypes(); // TODO: Initialize to an appropriate value
+            ConfigurationEntry.ControlTypes actual;
+            target.ControlType = expected;
+            actual = target.ControlType;
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");
         }

@@ -100,33 +100,33 @@ namespace Common.Configuration {
 
                 // Add the value rows
                 foreach (ConfigurationEntry entry in kv.Value) {
-                    switch (entry.InputType) {
-                        case ConfigurationEntry.InputTypeEnum.TextBox:
+                    switch (entry.ControlType) {
+                        case ConfigurationEntry.ControlTypes.TextBox:
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddTextBoxToRow(entry, row);
                             break;
-                        case ConfigurationEntry.InputTypeEnum.ComboBox:
+                        case ConfigurationEntry.ControlTypes.ComboBox:
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddComboBoxToRow(entry, row);
                             break;
-                        case ConfigurationEntry.InputTypeEnum.CheckBox:
+                        case ConfigurationEntry.ControlTypes.CheckBox:
                             ControlMapping[entry] = AddCheckBoxToRow(entry, row);
                             break;
-                        case ConfigurationEntry.InputTypeEnum.Label:
+                        case ConfigurationEntry.ControlTypes.Label:
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddLabelToRow(entry, row);
                             break;
-                        case ConfigurationEntry.InputTypeEnum.GenericConfiguration:
-                        case ConfigurationEntry.InputTypeEnum.Complex:
+                        case ConfigurationEntry.ControlTypes.GenericConfiguration:
+                        case ConfigurationEntry.ControlTypes.Button:
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddButtonToRow(entry, row);
                             break;
-                        case ConfigurationEntry.InputTypeEnum.Slider:
+                        case ConfigurationEntry.ControlTypes.Slider:
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddLabelSliderToRow(entry, row);
                             break;
                         default:
-                            throw new ArgumentException(String.Format("Unknown input type: {0}", entry.InputType));
+                            throw new ArgumentException(String.Format("Unknown input type: {0}", entry.ControlType));
                     }
                     entry.PropertyChanged += UpdateControlWithNewValue;
                     row++;
@@ -308,7 +308,7 @@ namespace Common.Configuration {
             Button btn = (Button)sender;
             ConfigurationEntry entry = (ConfigurationEntry)btn.Tag;
 
-            if (entry.InputType == ConfigurationEntry.InputTypeEnum.GenericConfiguration && entry.Value != null) {
+            if (entry.ControlType == ConfigurationEntry.ControlTypes.GenericConfiguration && entry.Value != null) {
                 GenericConfiguration value = (GenericConfiguration)entry.Value;
                 ConfigurationForm.EditConfiguration(null, value);
             }
@@ -390,26 +390,26 @@ namespace Common.Configuration {
             if (!ControlMapping.ContainsKey(entry))
                 return;
 
-            switch (entry.InputType) {
-                case ConfigurationEntry.InputTypeEnum.TextBox:
+            switch (entry.ControlType) {
+                case ConfigurationEntry.ControlTypes.TextBox:
                     ((TextBox)ControlMapping[entry]).Text = entry.Value == null ? "" : entry.Value.ToString();
                     break;
-                case ConfigurationEntry.InputTypeEnum.ComboBox:
+                case ConfigurationEntry.ControlTypes.ComboBox:
                     ((ComboBox)ControlMapping[entry]).SelectedItem = ((ComboBox)ControlMapping[entry]).Items.IndexOf(entry.Value);
                     break;
-                case ConfigurationEntry.InputTypeEnum.CheckBox:
+                case ConfigurationEntry.ControlTypes.CheckBox:
                     ((CheckBox)ControlMapping[entry]).Checked = (entry.Value == null ? false : entry.Value is Boolean ? (Boolean)entry.Value : Boolean.Parse(entry.Value.ToString()));
                     break;
-                case ConfigurationEntry.InputTypeEnum.Label:
+                case ConfigurationEntry.ControlTypes.Label:
                     ((Label)ControlMapping[entry]).Text = entry.Value == null ? "" : entry.Value.ToString();
                     break;
-                case ConfigurationEntry.InputTypeEnum.GenericConfiguration:
+                case ConfigurationEntry.ControlTypes.GenericConfiguration:
                     // Ignore this one
                     break;
-                case ConfigurationEntry.InputTypeEnum.Complex:
+                case ConfigurationEntry.ControlTypes.Button:
                     // Ignore this one
                     break;
-                case ConfigurationEntry.InputTypeEnum.Slider:
+                case ConfigurationEntry.ControlTypes.Slider:
                     ((LabelSlider)ControlMapping[entry]).Value = ConfigurationEntry.ToInt32(entry.Value, ((LabelSlider)ControlMapping[entry]).Minimum);
                     break;
                 default:

@@ -13,7 +13,7 @@ namespace Common.Configuration {
         public Boolean ReadOnly { get; set; }
         public Object Minimum { get; set; }
         public Object Maximum { get; set; }
-        public ConfigurationEntry.InputTypeEnum InputType { get; set; }
+        public ConfigurationEntry.ControlTypes ControlType { get; set; }
 
         public String Validator { get; set; }
 
@@ -24,7 +24,7 @@ namespace Common.Configuration {
             Entry.ReadOnly = ReadOnly;
             Entry.Minimum = Minimum;
             Entry.Maximum = Maximum;
-            Entry.InputType = InputType;
+            Entry.ControlType = ControlType;
 
             if (!String.IsNullOrEmpty(Validator)) {
                 switch (Validator) {
@@ -48,21 +48,21 @@ namespace Common.Configuration {
             this.SortKey = SortKey;
             this.GroupKey = GroupKey;
 
-            this.InputType = ConfigurationEntry.InputTypeEnum.TextBox;
+            this.ControlType = ConfigurationEntry.ControlTypes.TextBox;
         }
 
-        public ConfigurationAttribute(String Text, Int32 SortKey, Object GroupKey, ConfigurationEntry.InputTypeEnum InputType) {
+        public ConfigurationAttribute(String Text, Int32 SortKey, Object GroupKey, ConfigurationEntry.ControlTypes ControlType) {
             this.Text = Text;
             this.SortKey = SortKey;
             this.GroupKey = GroupKey;
-            this.InputType = InputType;
+            this.ControlType = ControlType;
         }
 
-        public ConfigurationAttribute(String Text, Int32 SortKey, Object GroupKey, ConfigurationEntry.InputTypeEnum InputType, Object Mininum, Object Maximum) {
+        public ConfigurationAttribute(String Text, Int32 SortKey, Object GroupKey, ConfigurationEntry.ControlTypes ControlType, Object Mininum, Object Maximum) {
             this.Text = Text;
             this.SortKey = SortKey;
             this.GroupKey = GroupKey;
-            this.InputType = InputType;
+            this.ControlType = ControlType;
             this.Minimum = Minimum;
             this.Maximum = Maximum;
         }

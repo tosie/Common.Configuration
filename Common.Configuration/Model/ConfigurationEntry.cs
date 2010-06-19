@@ -17,8 +17,8 @@ namespace Common.Configuration {
         public Boolean ReadOnly { get; set; }
         public Object Minimum { get; set; }
         public Object Maximum { get; set; }
-        public enum InputTypeEnum { TextBox, ComboBox, CheckBox, Label, GenericConfiguration, Complex, Slider };
-        public InputTypeEnum InputType { get; set; }
+        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider };
+        public ControlTypes ControlType { get; set; }
         
         protected Object value;
         public Object Value {
@@ -41,6 +41,15 @@ namespace Common.Configuration {
 
         public String ValueAsString {
             get { return GetValueAsString(value); }
+        }
+
+        public String GetValueAsString(Object Value) {
+            String result = "";
+
+            if (!RaiseFormatValue(Value, out result))
+                result = (value == null ? "" : Value.ToString());
+
+            return result;
         }
 
         #endregion
@@ -69,13 +78,13 @@ namespace Common.Configuration {
             return result;
         }
 
-        public delegate void ComplexEditorHandler(ConfigurationEntry Sender);
-        public event ComplexEditorHandler ComplexEditor;
-        protected void RaiseComplexEditor() {
-            if (ComplexEditor == null)
+        public delegate void ButtonEditorHandler(ConfigurationEntry Sender);
+        public event ButtonEditorHandler ButtonEditor;
+        protected void RaiseButtonEditor() {
+            if (ButtonEditor == null)
                 return;
 
-            ComplexEditor(this);
+            ButtonEditor(this);
         }
 
         public delegate String FormatValueHandler(ConfigurationEntry Sender, Object Value);
@@ -87,14 +96,6 @@ namespace Common.Configuration {
 
             ValueAsString = FormatValue(this, Value);
             return true;
-        }
-        public String GetValueAsString(Object Value) {
-            String result = "";
-
-            if (!RaiseFormatValue(Value, out result))
-                result = (value == null ? "" : Value.ToString());
-
-            return result;
         }
 
         #endregion
