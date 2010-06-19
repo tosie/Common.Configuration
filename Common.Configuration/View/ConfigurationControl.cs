@@ -80,13 +80,13 @@ namespace Common.Configuration {
                 Object group = (entry.GroupKey == null ? "" : entry.GroupKey);
 
                 // Initialize a new group in the dictionary
-                if (!groups.ContainsKey(entry.GroupKey)) {
-                    groups[entry.GroupKey] = new List<ConfigurationEntry>();
+                if (!groups.ContainsKey(group)) {
+                    groups[group] = new List<ConfigurationEntry>();
                     total_rows++;
                 }
 
                 // Add the entry to the dictionary
-                groups[entry.GroupKey].Add(entry);
+                groups[group].Add(entry);
 
                 total_rows++;
             }
