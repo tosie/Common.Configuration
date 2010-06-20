@@ -168,8 +168,10 @@ namespace Common.Configuration {
 
             // Setup the container panel
             Table.ColumnCount = 2;
-            Table.ColumnStyles[0].Width = 0.45f;
-            Table.ColumnStyles[1].Width = 1.0f - Table.ColumnStyles[0].Width;
+            Table.ColumnStyles[0].SizeType = SizeType.AutoSize;
+            Table.ColumnStyles[1].Width = 1.0f;
+            //Table.ColumnStyles[0].Width = 0.45f;
+            //Table.ColumnStyles[1].Width = 1.0f - Table.ColumnStyles[0].Width;
             Table.RowStyles.Clear();
             Table.RowCount = 0;
             UpdateTableStyles(0);
@@ -299,6 +301,8 @@ namespace Common.Configuration {
             lbl.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             lbl.TextAlign = ContentAlignment.TopLeft;
             lbl.ForeColor = SystemColors.GrayText;
+            lbl.Margin = new Padding(lbl.Margin.Left, 0, lbl.Margin.Right,
+                9);
 
             // Content
             lbl.Text = Entry.SubText;
