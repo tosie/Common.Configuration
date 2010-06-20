@@ -138,6 +138,12 @@ namespace Common.Configuration {
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddLabelSliderToRow(entry, row);
                             break;
+                        case ConfigurationEntry.ControlTypes.File:
+                        case ConfigurationEntry.ControlTypes.Directory:
+                            AddHeadingToRow(entry.Text, row, false);
+                            ControlMapping[entry] = AddFileSystemBrowserToRow(entry, row,
+                                entry.ControlType == ConfigurationEntry.ControlTypes.Directory);
+                            break;
                         default:
                             throw new ArgumentException(String.Format("Unknown input type: {0}", entry.ControlType));
                     }
@@ -281,6 +287,7 @@ namespace Common.Configuration {
             ApplyBasicControlSettings(btn, Entry, Row);
             
             // Layout
+            btn.BackColor = SystemColors.ButtonFace;
 
             // Content
             btn.Text = "Ändern";
@@ -306,6 +313,21 @@ namespace Common.Configuration {
             sld.ValueChanged += new EventHandler(control_ValueChanged);
 
             return sld;
+        }
+
+        FileSystemBrowser AddFileSystemBrowserToRow(ConfigurationEntry Entry, Int32 Row, Boolean IsDirectoryBrowser) {
+            FileSystemBrowser control = new FileSystemBrowser();
+            ApplyBasicControlSettings(control, Entry, Row);
+
+            // Layout
+            control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+
+            // Content
+            control.IsDirectoryBrowser = IsDirectoryBrowser;
+            control.Value = (Entry.Value == null ? "" : Entry.Value.ToString());
+            control.ValueChanged += new EventHandler(control_ValueChanged);
+
+            return control;
         }
 
         #endregion
@@ -369,6 +391,8 @@ namespace Common.Configuration {
                 return (Control as CheckBox).Checked;
             } else if (Control is LabelSlider) {
                 return (Control as LabelSlider).Value;
+            } else if (Control is FileSystemBrowser) {
+                return (Control as FileSystemBrowser).Value;
             } else {
                 throw new ArgumentException(String.Format("Unknown control type: {0}", Control), "Control");
             }
@@ -406,18 +430,20 @@ namespace Common.Configuration {
             if (!ControlMapping.ContainsKey(entry))
                 return;
 
+            Control control = ControlMapping[entry];
+
             switch (entry.ControlType) {
                 case ConfigurationEntry.ControlTypes.TextBox:
-                    ((TextBox)ControlMapping[entry]).Text = entry.Value == null ? "" : entry.Value.ToString();
+                    ((TextBox)control).Text = entry.Value == null ? "" : entry.Value.ToString();
                     break;
                 case ConfigurationEntry.ControlTypes.ComboBox:
-                    ((ComboBox)ControlMapping[entry]).SelectedItem = ((ComboBox)ControlMapping[entry]).Items.IndexOf(entry.Value);
+                    ((ComboBox)control).SelectedItem = ((ComboBox)control).Items.IndexOf(entry.Value);
                     break;
                 case ConfigurationEntry.ControlTypes.CheckBox:
-                    ((CheckBox)ControlMapping[entry]).Checked = (entry.Value == null ? false : entry.Value is Boolean ? (Boolean)entry.Value : Boolean.Parse(entry.Value.ToString()));
+                    ((CheckBox)control).Checked = (entry.Value == null ? false : entry.Value is Boolean ? (Boolean)entry.Value : Boolean.Parse(entry.Value.ToString()));
                     break;
                 case ConfigurationEntry.ControlTypes.Label:
-                    ((Label)ControlMapping[entry]).Text = entry.Value == null ? "" : entry.Value.ToString();
+                    ((Label)control).Text = entry.Value == null ? "" : entry.Value.ToString();
                     break;
                 case ConfigurationEntry.ControlTypes.GenericConfiguration:
                     // Ignore this one
@@ -426,7 +452,11 @@ namespace Common.Configuration {
                     // Ignore this one
                     break;
                 case ConfigurationEntry.ControlTypes.Slider:
-                    ((LabelSlider)ControlMapping[entry]).Value = ConfigurationEntry.ToInt32(entry.Value, ((LabelSlider)ControlMapping[entry]).Minimum);
+                    ((LabelSlider)control).Value = ConfigurationEntry.ToInt32(entry.Value, ((LabelSlider)control).Minimum);
+                    break;
+                case ConfigurationEntry.ControlTypes.File:
+                case ConfigurationEntry.ControlTypes.Directory:
+                    ((FileSystemBrowser)control).Value = entry.Value == null ? "" : entry.Value.ToString();
                     break;
                 default:
                     break;

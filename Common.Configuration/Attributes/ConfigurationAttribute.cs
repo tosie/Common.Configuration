@@ -28,6 +28,14 @@ namespace Common.Configuration {
             Entry.Maximum = Maximum;
             Entry.ControlType = ControlType;
 
+            Dictionary<String, ConfigurationEntry.ValidateEvent> available_validators = new Dictionary<String, ConfigurationEntry.ValidateEvent>() {
+                { "Int32", ConfigurationEntry.ValidateInt32Value },
+                { "Double", ConfigurationEntry.ValidateDoubleValue },
+                { "Boolean", ConfigurationEntry.ValidateBooleanValue },
+                { "FileExists", ConfigurationEntry.ValidateFileExists },
+                { "DirectoryExists", ConfigurationEntry.ValidateDirectoryExists }
+            };
+
             if (!String.IsNullOrEmpty(Validator)) {
                 String[] validators = Validator.Split(',');
                 foreach (String v in validators) {
@@ -35,21 +43,20 @@ namespace Common.Configuration {
                     if (String.IsNullOrEmpty(validator))
                         continue;
 
-                    switch (validator) {
-                        case "Int32":
-                            Entry.ValidateValue += new ConfigurationEntry.ValidateEvent(ConfigurationEntry.ValidateInt32Value);
-                            break;
-                        case "Double":
-                            Entry.ValidateValue += new ConfigurationEntry.ValidateEvent(ConfigurationEntry.ValidateDoubleValue);
-                            break;
-                        case "Boolean":
-                            Entry.ValidateValue += new ConfigurationEntry.ValidateEvent(ConfigurationEntry.ValidateBooleanValue);
-                            break;
-                        default:
-                            throw new ArgumentException(String.Format("Unknown validator: {0}", Validator), "Validator");
-                    }
+                    if (available_validators.ContainsKey(validator))
+                        Entry.ValidateValue += new ConfigurationEntry.ValidateEvent(available_validators[validator]);
+                    else
+                            throw new ArgumentException(String.Format("Unknown validator: {0}", validator), "Validator");
                 }
             }
+        }
+
+        public ConfigurationAttribute(String Text, Int32 SortKey) {
+            this.Text = Text;
+            this.SortKey = SortKey;
+
+            this.GroupKey = null;
+            this.ControlType = ConfigurationEntry.ControlTypes.TextBox;
         }
 
         public ConfigurationAttribute(String Text, Int32 SortKey, Object GroupKey) {

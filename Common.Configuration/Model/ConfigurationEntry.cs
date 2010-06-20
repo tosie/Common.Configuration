@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.IO;
 
 namespace Common.Configuration {
     public class ConfigurationEntry : INotifyPropertyChanged {
@@ -18,7 +19,7 @@ namespace Common.Configuration {
         public Boolean ReadOnly { get; set; }
         public Object Minimum { get; set; }
         public Object Maximum { get; set; }
-        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider };
+        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory };
         public ControlTypes ControlType { get; set; }
         
         protected Object value;
@@ -203,6 +204,24 @@ namespace Common.Configuration {
                 Valid = true;
                 return;
             }
+        }
+
+        public static void ValidateFileExists(ConfigurationEntry Sender, ref object Value, out bool Valid) {
+            Valid = false;
+            if (Value == null)
+                return;
+
+            String val = Value.ToString();
+            Valid = File.Exists(val);
+        }
+
+        public static void ValidateDirectoryExists(ConfigurationEntry Sender, ref object Value, out bool Valid) {
+            Valid = false;
+            if (Value == null)
+                return;
+
+            String val = Value.ToString();
+            Valid = Directory.Exists(val);
         }
 
         #endregion

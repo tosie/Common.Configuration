@@ -73,6 +73,12 @@
     <Compile Include="View\ConfigurationForm.Designer.cs">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\FileSystemBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\FileSystemBrowser.Designer.cs">
+      <DependentUpon>FileSystemBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\LabelSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -89,6 +95,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\FileSystemBrowser.resx">
+      <DependentUpon>FileSystemBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\LabelSlider.resx">
       <DependentUpon>LabelSlider.cs</DependentUpon>
