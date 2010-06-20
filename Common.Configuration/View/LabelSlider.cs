@@ -13,43 +13,33 @@ namespace Common.Configuration {
         #region Properties / Class Variables
 
         public Int32 Value {
-            get {
-                return trackBar.Value;
-            }
-
-            set {
-                trackBar.Value = value;
-            }
+            get { return trackBar.Value; }
+            set { trackBar.Value = value; }
         }
 
         public Int32 Minimum {
-            get {
-                return trackBar.Minimum;
-            }
-
-            set {
-                trackBar.Minimum = value;
-            }
+            get { return trackBar.Minimum; }
+            set { trackBar.Minimum = value; }
         }
 
         public Int32 Maximum {
-            get {
-                return trackBar.Maximum;
-            }
+            get { return trackBar.Maximum; }
+            set { trackBar.Maximum = value; }
+        }
 
-            set {
-                trackBar.Maximum = value;
-            }
+        public Int32 SmallChange {
+            get { return trackBar.SmallChange; }
+            set { trackBar.SmallChange = value; }
+        }
+
+        public Int32 LargeChange {
+            get { return trackBar.LargeChange; }
+            set { trackBar.LargeChange = value; }
         }
 
         public override String Text {
-            get {
-                return valueLabel.Text;
-            }
-
-            set {
-                valueLabel.Text = value;
-            }
+            get { return valueLabel.Text; }
+            set { valueLabel.Text = value; }
         }
 
         #endregion

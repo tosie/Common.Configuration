@@ -11,6 +11,7 @@ namespace Common.Configuration {
 
         public String Name { get; set; } // short name
         public String Text { get; set; } // text to show on a form
+        public String SubText { get; set; }
         public Int32 SortKey { get; set; }
         public Object GroupKey { get; set; }
         public Object Tag { get; set; }

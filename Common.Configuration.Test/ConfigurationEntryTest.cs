@@ -289,7 +289,7 @@ namespace Common.Configuration.Test
         ///A test for RaisePropertyChanged
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void RaisePropertyChangedTest() {
             ConfigurationEntry_Accessor target = new ConfigurationEntry_Accessor(); // TODO: Initialize to an appropriate value
             string PropertyName = string.Empty; // TODO: Initialize to an appropriate value
@@ -301,7 +301,7 @@ namespace Common.Configuration.Test
         ///A test for RaiseFormatValue
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void RaiseFormatValueTest() {
             ConfigurationEntry_Accessor target = new ConfigurationEntry_Accessor(); // TODO: Initialize to an appropriate value
             object Value = null; // TODO: Initialize to an appropriate value
@@ -319,10 +319,10 @@ namespace Common.Configuration.Test
         ///A test for RaiseComplexEditor
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void RaiseComplexEditorTest() {
             ConfigurationEntry_Accessor target = new ConfigurationEntry_Accessor(); // TODO: Initialize to an appropriate value
-            target.RaiseComplexEditor();
+            target.RaiseButtonEditor();
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
 

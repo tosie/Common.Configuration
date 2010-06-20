@@ -58,13 +58,13 @@
     <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Shadow Include="Test References\Common.Configuration.accessor" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Common.Configuration\Common.Configuration.csproj">
       <Project>{670C7473-5330-4D2C-9B9A-CDC51D707D67}</Project>
       <Name>Common.Configuration</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Shadow Include="Test References\GenericConfiguration.accessor" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -82,7 +82,7 @@ namespace Common.Configuration.Test
         ///A test for Data
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void DataTest() {
             GenericConfiguration_Accessor target = new GenericConfiguration_Accessor(); // TODO: Initialize to an appropriate value
             List<ConfigurationEntry> expected = null; // TODO: Initialize to an appropriate value
@@ -97,7 +97,7 @@ namespace Common.Configuration.Test
         ///A test for BoundObject
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void BoundObjectTest() {
             GenericConfiguration_Accessor target = new GenericConfiguration_Accessor(); // TODO: Initialize to an appropriate value
             object expected = null; // TODO: Initialize to an appropriate value
@@ -112,7 +112,7 @@ namespace Common.Configuration.Test
         ///A test for System.Collections.IEnumerable.GetEnumerator
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void GetEnumeratorTest() {
             IEnumerable target = new GenericConfiguration(); // TODO: Initialize to an appropriate value
             IEnumerator expected = null; // TODO: Initialize to an appropriate value
@@ -154,7 +154,7 @@ namespace Common.Configuration.Test
         ///A test for entry_QueryPossibleValues
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void entry_QueryPossibleValuesTest() {
             GenericConfiguration_Accessor target = new GenericConfiguration_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Sender = null; // TODO: Initialize to an appropriate value
@@ -169,7 +169,7 @@ namespace Common.Configuration.Test
         ///A test for entry_PropertyChanged
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void entry_PropertyChangedTest() {
             GenericConfiguration_Accessor target = new GenericConfiguration_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -219,7 +219,7 @@ namespace Common.Configuration.Test
         ///A test for AddByPropertyWithAttribute
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddByPropertyWithAttributeTest() {
             GenericConfiguration_Accessor target = new GenericConfiguration_Accessor(); // TODO: Initialize to an appropriate value
             object BoundObject = null; // TODO: Initialize to an appropriate value

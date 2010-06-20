@@ -58,8 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ConfigurationAttribute.cs" />
+    <Compile Include="Controller\GenericConfiguration.cs" />
     <Compile Include="Model\ConfigurationEntry.cs" />
-    <Compile Include="Model\GenericConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\ConfigurationControl.cs">
       <SubType>UserControl</SubType>

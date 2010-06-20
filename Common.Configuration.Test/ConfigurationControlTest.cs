@@ -109,7 +109,7 @@ namespace Common.Configuration.Test
         ///A test for ValidateValueOfControl
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void ValidateValueOfControlTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             Control Control = null; // TODO: Initialize to an appropriate value
@@ -128,7 +128,7 @@ namespace Common.Configuration.Test
         ///A test for UpdateTableStyles
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void UpdateTableStylesTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             int FirstRow = 0; // TODO: Initialize to an appropriate value
@@ -140,7 +140,7 @@ namespace Common.Configuration.Test
         ///A test for UpdateControlWithNewValue
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void UpdateControlWithNewValueTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -153,7 +153,7 @@ namespace Common.Configuration.Test
         ///A test for UnmapControls
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void UnmapControlsTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.UnmapControls();
@@ -164,7 +164,7 @@ namespace Common.Configuration.Test
         ///A test for sld_FormatValue
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void sld_FormatValueTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             LabelSlider Sender = null; // TODO: Initialize to an appropriate value
@@ -180,7 +180,7 @@ namespace Common.Configuration.Test
         ///A test for ShowSingleConfiguration
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void ShowSingleConfigurationTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.ShowSingleConfiguration();
@@ -191,7 +191,7 @@ namespace Common.Configuration.Test
         ///A test for ShowMultipleConfigurations
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void ShowMultipleConfigurationsTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.ShowMultipleConfigurations();
@@ -212,7 +212,7 @@ namespace Common.Configuration.Test
         ///A test for rowHeading_Click
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void rowHeading_ClickTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -225,7 +225,7 @@ namespace Common.Configuration.Test
         ///A test for InitializeComponent
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void InitializeComponentTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.InitializeComponent();
@@ -236,7 +236,7 @@ namespace Common.Configuration.Test
         ///A test for GetValueOfControl
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void GetValueOfControlTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             Control Control = null; // TODO: Initialize to an appropriate value
@@ -251,7 +251,7 @@ namespace Common.Configuration.Test
         ///A test for Finalize
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void FinalizeTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.Finalize();
@@ -262,7 +262,7 @@ namespace Common.Configuration.Test
         ///A test for Dispose
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void DisposeTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             bool disposing = false; // TODO: Initialize to an appropriate value
@@ -274,7 +274,7 @@ namespace Common.Configuration.Test
         ///A test for control_ValueChanged
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void control_ValueChangedTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -287,7 +287,7 @@ namespace Common.Configuration.Test
         ///A test for control_Leave
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void control_LeaveTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -300,7 +300,7 @@ namespace Common.Configuration.Test
         ///A test for ClearTable
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void ClearTableTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.ClearTable();
@@ -311,7 +311,7 @@ namespace Common.Configuration.Test
         ///A test for btn_Click
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void btn_ClickTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -324,7 +324,7 @@ namespace Common.Configuration.Test
         ///A test for ApplyBasicControlSettings
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void ApplyBasicControlSettingsTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             Control Control = null; // TODO: Initialize to an appropriate value
@@ -338,7 +338,7 @@ namespace Common.Configuration.Test
         ///A test for AddTextBoxToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddTextBoxToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Entry = null; // TODO: Initialize to an appropriate value
@@ -354,7 +354,7 @@ namespace Common.Configuration.Test
         ///A test for AddLabelToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddLabelToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Entry = null; // TODO: Initialize to an appropriate value
@@ -370,7 +370,7 @@ namespace Common.Configuration.Test
         ///A test for AddLabelSliderToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddLabelSliderToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Entry = null; // TODO: Initialize to an appropriate value
@@ -386,7 +386,7 @@ namespace Common.Configuration.Test
         ///A test for AddHeadingToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddHeadingToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             string Text = string.Empty; // TODO: Initialize to an appropriate value
@@ -403,7 +403,7 @@ namespace Common.Configuration.Test
         ///A test for AddDummyRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddDummyRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             target.AddDummyRow();
@@ -414,7 +414,7 @@ namespace Common.Configuration.Test
         ///A test for AddConfigurationEntriesToTable
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddConfigurationEntriesToTableTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             GenericConfiguration Config = null; // TODO: Initialize to an appropriate value
@@ -426,7 +426,7 @@ namespace Common.Configuration.Test
         ///A test for AddComboBoxToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddComboBoxToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Entry = null; // TODO: Initialize to an appropriate value
@@ -442,7 +442,7 @@ namespace Common.Configuration.Test
         ///A test for AddCheckBoxToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddCheckBoxToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Entry = null; // TODO: Initialize to an appropriate value
@@ -458,7 +458,7 @@ namespace Common.Configuration.Test
         ///A test for AddButtonToRow
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void AddButtonToRowTest() {
             ConfigurationControl_Accessor target = new ConfigurationControl_Accessor(); // TODO: Initialize to an appropriate value
             ConfigurationEntry Entry = null; // TODO: Initialize to an appropriate value

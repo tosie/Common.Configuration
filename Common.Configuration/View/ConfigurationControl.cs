@@ -297,8 +297,11 @@ namespace Common.Configuration {
             sld.Anchor = AnchorStyles.Right | AnchorStyles.Left;
 
             // Content
-            sld.FormatValue += new LabelSlider.FormatValueEvent(sld_FormatValue); sld.Minimum = ConfigurationEntry.ToInt32(Entry.Minimum, 0);
+            sld.FormatValue += new LabelSlider.FormatValueEvent(sld_FormatValue);
+            sld.Minimum = ConfigurationEntry.ToInt32(Entry.Minimum, 0);
             sld.Maximum = ConfigurationEntry.ToInt32(Entry.Maximum, 10);
+            sld.SmallChange = 1;
+            sld.LargeChange = Convert.ToInt32(Math.Round((Convert.ToDouble(sld.Maximum - sld.Minimum)) / 10.0));
             sld.Value = ConfigurationEntry.ToInt32(Entry.Value, sld.Minimum);
             sld.ValueChanged += new EventHandler(control_ValueChanged);
 

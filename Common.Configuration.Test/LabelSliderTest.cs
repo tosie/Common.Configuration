@@ -120,7 +120,7 @@ namespace Common.Configuration.Test
         ///A test for trackBar_ValueChanged
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void trackBar_ValueChangedTest() {
             LabelSlider_Accessor target = new LabelSlider_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -133,7 +133,7 @@ namespace Common.Configuration.Test
         ///A test for RaiseValueChanged
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void RaiseValueChangedTest() {
             LabelSlider_Accessor target = new LabelSlider_Accessor(); // TODO: Initialize to an appropriate value
             target.RaiseValueChanged();
@@ -144,7 +144,7 @@ namespace Common.Configuration.Test
         ///A test for RaiseFormatValueEvent
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void RaiseFormatValueEventTest() {
             LabelSlider_Accessor target = new LabelSlider_Accessor(); // TODO: Initialize to an appropriate value
             int Value = 0; // TODO: Initialize to an appropriate value
@@ -159,7 +159,7 @@ namespace Common.Configuration.Test
         ///A test for LabelSlider_Enter
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void LabelSlider_EnterTest() {
             LabelSlider_Accessor target = new LabelSlider_Accessor(); // TODO: Initialize to an appropriate value
             object sender = null; // TODO: Initialize to an appropriate value
@@ -172,7 +172,7 @@ namespace Common.Configuration.Test
         ///A test for InitializeComponent
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void InitializeComponentTest() {
             LabelSlider_Accessor target = new LabelSlider_Accessor(); // TODO: Initialize to an appropriate value
             target.InitializeComponent();
@@ -183,7 +183,7 @@ namespace Common.Configuration.Test
         ///A test for Dispose
         ///</summary>
         [TestMethod()]
-        [DeploymentItem("GenericConfiguration.dll")]
+        [DeploymentItem("Common.Configuration.dll")]
         public void DisposeTest() {
             LabelSlider_Accessor target = new LabelSlider_Accessor(); // TODO: Initialize to an appropriate value
             bool disposing = false; // TODO: Initialize to an appropriate value
