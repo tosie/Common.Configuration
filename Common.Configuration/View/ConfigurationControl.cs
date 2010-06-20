@@ -87,8 +87,11 @@ namespace Common.Configuration {
 
                 // Add the entry to the dictionary
                 groups[group].Add(entry);
-
                 total_rows++;
+
+                // If there is a SubText, it needs to be counted, too
+                if (!String.IsNullOrEmpty(entry.SubText))
+                    total_rows++;
             }
 
             // Sort the grouped lists (SortKey)
