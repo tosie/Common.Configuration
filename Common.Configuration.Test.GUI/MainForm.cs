@@ -13,23 +13,27 @@ namespace Common.Configuration.Test.GUI {
 
         // None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider
 
-        [Configuration("Automatically apply settings", 1, ControlType = ConfigurationEntry.ControlTypes.CheckBox)]
+        [Configuration("Automatically apply settings", 1,
+            ControlType = ConfigurationEntry.ControlTypes.CheckBox)]
         public Boolean AutoSave {
             get { return ConfigControl.AutoSave; }
             set { ConfigControl.AutoSave = value; }
         }
 
-        [Configuration("Invisible", 10, ControlType = ConfigurationEntry.ControlTypes.None)]
+        [Configuration("Invisible", 10,
+            ControlType = ConfigurationEntry.ControlTypes.None)]
         public String InvisibleOption { get; set; }
 
-        [Configuration("Name", 11)]
+        [Configuration("Name", 11, "First")]
         public String NewName { get; set; }
 
-        [Configuration("Description (read only)", 20,
+        [Configuration("Description (read only)", 20, "First",
             ReadOnly = true)]
         public String Description { get; set; }
 
-        [Configuration("Option", 30, ControlType = ConfigurationEntry.ControlTypes.ComboBox)]
+        [Configuration("Option", 30, "First",
+            ControlType = ConfigurationEntry.ControlTypes.ComboBox,
+            SubText = "Really long long long long long long long long long long long long long long long text.")]
         public String Option { get; set; }
         public object[] OptionPossibleValues {
             get {
@@ -37,26 +41,34 @@ namespace Common.Configuration.Test.GUI {
             }
         }
 
-        [Configuration("Checker", 40, ControlType = ConfigurationEntry.ControlTypes.CheckBox,
+        [Configuration("Checker", 40, "Second",
+            ControlType = ConfigurationEntry.ControlTypes.CheckBox,
             Validator = "Boolean")]
         public Boolean DoSomething { get; set; }
 
-        [Configuration("A Label", 50, ControlType = ConfigurationEntry.ControlTypes.Label)]
+        [Configuration("A Label", 50, "Second",
+            ControlType = ConfigurationEntry.ControlTypes.Label)]
         public String ReadOnlyText { get; set; }
 
-        [Configuration("Button", 60, ControlType = ConfigurationEntry.ControlTypes.Button)]
+        [Configuration("Button", 60, "Second",
+            ControlType = ConfigurationEntry.ControlTypes.Button)]
         public String WithAButton { get; set; }
 
-        [Configuration("Option", 70, ControlType = ConfigurationEntry.ControlTypes.Slider,
+        [Configuration("Option", 70, "Second",
+            ControlType = ConfigurationEntry.ControlTypes.Slider,
             Minimum = 18, Maximum = 35, Validator = "Int32")]
         public Int32 Age { get; set; }
 
-        [Configuration("OutDir", 80, ControlType = ConfigurationEntry.ControlTypes.Directory,
-            Validator = "DirectoryExists")]
+        [Configuration("OutDir", 80, "Third",
+            ControlType = ConfigurationEntry.ControlTypes.Directory,
+            Validator = "DirectoryExists",
+            SubText = "Must Exist!")]
         public String OutDir { get; set; }
 
-        [Configuration("OutFile", 81, ControlType = ConfigurationEntry.ControlTypes.File,
-            Validator = "FileExists")]
+        [Configuration("OutFile", 81, "Third",
+            ControlType = ConfigurationEntry.ControlTypes.File,
+            Validator = "FileExists",
+            SubText = "Slightly longer longer longer longer longer text here.")]
         public String FileDir { get; set; }
 
         public MainForm() {

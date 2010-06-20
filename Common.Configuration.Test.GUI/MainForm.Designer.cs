@@ -38,14 +38,14 @@
             this.ConfigControl.Location = new System.Drawing.Point(12, 12);
             this.ConfigControl.MultipleConfigs = null;
             this.ConfigControl.Name = "ConfigControl";
-            this.ConfigControl.Size = new System.Drawing.Size(489, 290);
+            this.ConfigControl.Size = new System.Drawing.Size(340, 401);
             this.ConfigControl.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(513, 314);
+            this.ClientSize = new System.Drawing.Size(364, 425);
             this.Controls.Add(this.ConfigControl);
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;

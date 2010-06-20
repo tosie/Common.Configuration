@@ -149,6 +149,11 @@ namespace Common.Configuration {
                     }
                     entry.PropertyChanged += UpdateControlWithNewValue;
                     row++;
+
+                    if (!String.IsNullOrEmpty(entry.SubText)) {
+                        AddSubTextLabelToRow(entry, row);
+                        row++;
+                    }
                 }
             }
         }
@@ -278,6 +283,22 @@ namespace Common.Configuration {
             
             // Content
             lbl.Text = (Entry.Value == null ? "" : Entry.Value.ToString());
+
+            return lbl;
+        }
+
+        Label AddSubTextLabelToRow(ConfigurationEntry Entry, Int32 Row) {
+            Label lbl = new Label();
+            ApplyBasicControlSettings(lbl, Entry, Row);
+
+            // Layout
+            lbl.AutoSize = true;
+            lbl.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
+            lbl.TextAlign = ContentAlignment.TopLeft;
+            lbl.ForeColor = SystemColors.GrayText;
+
+            // Content
+            lbl.Text = Entry.SubText;
 
             return lbl;
         }
