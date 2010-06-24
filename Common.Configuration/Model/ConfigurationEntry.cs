@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Common.Configuration {
     public class ConfigurationEntry : INotifyPropertyChanged {
@@ -80,13 +81,13 @@ namespace Common.Configuration {
             return result;
         }
 
-        public delegate void ButtonEditorHandler(ConfigurationEntry Sender);
-        public event ButtonEditorHandler ButtonEditor;
-        public void RaiseButtonEditor() {
-            if (ButtonEditor == null)
+        public delegate void EditorHandler(ConfigurationEntry Sender, IWin32Window Owner);
+        public event EditorHandler Editor;
+        public void RaiseEditor(IWin32Window Owner) {
+            if (Editor == null)
                 return;
 
-            ButtonEditor(this);
+            Editor(this, Owner);
         }
 
         public delegate String FormatValueHandler(ConfigurationEntry Sender, Object Value);

@@ -401,7 +401,7 @@ namespace Common.Configuration {
                 GenericConfiguration value = (GenericConfiguration)entry.Value;
                 ConfigurationForm.EditConfiguration(null, value);
             } else if (entry.ControlType == ConfigurationEntry.ControlTypes.Button) {
-                entry.RaiseButtonEditor();
+                entry.RaiseEditor(this.ParentForm);
             }
         }
 

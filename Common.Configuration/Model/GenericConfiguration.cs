@@ -7,6 +7,7 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Xml.Serialization;
+using System.Windows.Forms;
 
 namespace Common.Configuration {
     [XmlRoot("genericconfiguration")]
@@ -106,7 +107,7 @@ namespace Common.Configuration {
 
             entry.PropertyChanged += new PropertyChangedEventHandler(entry_PropertyChanged);
             entry.QueryPossibleValues += new ConfigurationEntry.QueryPossibleValuesEvent(entry_QueryPossibleValues);
-            entry.ButtonEditor += new ConfigurationEntry.ButtonEditorHandler(entry_ButtonEditor);
+            entry.Editor += new ConfigurationEntry.EditorHandler(entry_Editor);
 
             if (entry.SortKey == 0)
                 entry.SortKey = Data.Count;
@@ -116,18 +117,18 @@ namespace Common.Configuration {
             return entry;
         }
 
-        void entry_ButtonEditor(ConfigurationEntry Sender) {
+        void entry_Editor(ConfigurationEntry Sender, IWin32Window Owner) {
             if (BoundObject == null)
                 return;
 
-            String method_name = Sender.Name + "ButtonEditor";
+            String method_name = Sender.Name + "Editor";
 
             Type t = BoundObject.GetType();
             MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             if (method == null)
                 return;
 
-            method.Invoke(BoundObject, new object[] { Sender });
+            method.Invoke(BoundObject, new object[] { Sender, Owner });
         }
 
         void entry_QueryPossibleValues(ConfigurationEntry Sender, out object[] PossibleValues) {
