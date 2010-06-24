@@ -121,6 +121,10 @@ namespace Common.Configuration {
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddTextBoxToRow(entry, row);
                             break;
+                        case ConfigurationEntry.ControlTypes.MultiLineTextBox:
+                            AddHeadingToRow(entry.Text, row, false);
+                            ControlMapping[entry] = AddMultilineBoxToRow(entry, row);
+                            break;
                         case ConfigurationEntry.ControlTypes.ComboBox:
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddComboBoxToRow(entry, row);
@@ -159,6 +163,9 @@ namespace Common.Configuration {
                     }
                 }
             }
+
+            // Add a final label with no text to add some extra spacing
+            AddHeadingToRow("", row, false);
         }
 
         private void ClearTable() {
@@ -168,10 +175,9 @@ namespace Common.Configuration {
 
             // Setup the container panel
             Table.ColumnCount = 2;
-            Table.ColumnStyles[0].SizeType = SizeType.AutoSize;
-            Table.ColumnStyles[1].Width = 1.0f;
-            //Table.ColumnStyles[0].Width = 0.45f;
-            //Table.ColumnStyles[1].Width = 1.0f - Table.ColumnStyles[0].Width;
+            //Table.ColumnStyles[0].SizeType = SizeType.AutoSize;
+            Table.ColumnStyles[0].Width = 0.25f;
+            Table.ColumnStyles[1].Width = 1.0f - Table.ColumnStyles[0].Width;
             Table.RowStyles.Clear();
             Table.RowCount = 0;
             UpdateTableStyles(0);
@@ -211,7 +217,13 @@ namespace Common.Configuration {
             // Layout
             lbl.AutoSize = false;
             lbl.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
-            lbl.TextAlign = ContentAlignment.MiddleRight;
+            lbl.TextAlign = ContentAlignment.TopRight;
+            lbl.Margin = new Padding(
+                lbl.Margin.Left,
+                lbl.Margin.Top + (int)lbl.Font.Size,
+                lbl.Margin.Right,
+                lbl.Margin.Bottom);
+            lbl.AutoEllipsis = true;
             
             // Content
             lbl.Text = Text;
@@ -230,17 +242,28 @@ namespace Common.Configuration {
         }
 
         TextBox AddTextBoxToRow(ConfigurationEntry Entry, Int32 Row) {
-            TextBox txt = new TextBox();
-            ApplyBasicControlSettings(txt, Entry, Row);
+            TextBox control = new TextBox();
+            ApplyBasicControlSettings(control, Entry, Row);
             
             // Layout
-            txt.Anchor = AnchorStyles.Right | AnchorStyles.Left;
+            control.Anchor = AnchorStyles.Right | AnchorStyles.Left;
 
             // Content
-            txt.Text = (Entry.Value == null ? "" : Entry.Value.ToString());
-            txt.TextChanged += new EventHandler(control_ValueChanged);
+            control.Text = (Entry.Value == null ? "" : Entry.Value.ToString());
+            control.TextChanged += new EventHandler(control_ValueChanged);
 
-            return txt;
+            return control;
+        }
+
+        TextBox AddMultilineBoxToRow(ConfigurationEntry Entry, Int32 Row) {
+            TextBox control = AddTextBoxToRow(Entry, Row);
+
+            control.Multiline = true;
+            control.Height = control.Height * 10;
+            control.ScrollBars = ScrollBars.Vertical;
+            control.WordWrap = true;
+
+            return control;
         }
 
         ComboBox AddComboBoxToRow(ConfigurationEntry Entry, Int32 Row) {
@@ -377,6 +400,8 @@ namespace Common.Configuration {
             if (entry.ControlType == ConfigurationEntry.ControlTypes.GenericConfiguration && entry.Value != null) {
                 GenericConfiguration value = (GenericConfiguration)entry.Value;
                 ConfigurationForm.EditConfiguration(null, value);
+            } else if (entry.ControlType == ConfigurationEntry.ControlTypes.Button) {
+                entry.RaiseButtonEditor();
             }
         }
 
@@ -462,6 +487,7 @@ namespace Common.Configuration {
 
             switch (entry.ControlType) {
                 case ConfigurationEntry.ControlTypes.TextBox:
+                case ConfigurationEntry.ControlTypes.MultiLineTextBox:
                     ((TextBox)control).Text = entry.Value == null ? "" : entry.Value.ToString();
                     break;
                 case ConfigurationEntry.ControlTypes.ComboBox:

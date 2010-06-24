@@ -19,7 +19,7 @@ namespace Common.Configuration {
         public Boolean ReadOnly { get; set; }
         public Object Minimum { get; set; }
         public Object Maximum { get; set; }
-        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory };
+        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory, MultiLineTextBox };
         public ControlTypes ControlType { get; set; }
         
         protected Object value;
@@ -82,7 +82,7 @@ namespace Common.Configuration {
 
         public delegate void ButtonEditorHandler(ConfigurationEntry Sender);
         public event ButtonEditorHandler ButtonEditor;
-        protected void RaiseButtonEditor() {
+        public void RaiseButtonEditor() {
             if (ButtonEditor == null)
                 return;
 

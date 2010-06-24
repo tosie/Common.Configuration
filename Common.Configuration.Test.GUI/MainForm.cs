@@ -25,7 +25,10 @@ namespace Common.Configuration.Test.GUI {
         public String InvisibleOption { get; set; }
 
         [Configuration("Name", 11, "First")]
-        public String NewName { get; set; }
+        public String NewName {
+            get { return Text; }
+            set { Text = value; }
+        }
 
         [Configuration("Description (read only)", 20, "First",
             ReadOnly = true)]
@@ -54,6 +57,10 @@ namespace Common.Configuration.Test.GUI {
             ControlType = ConfigurationEntry.ControlTypes.Button)]
         public String WithAButton { get; set; }
 
+        protected void WithAButtonButtonEditor(ConfigurationEntry Sender) {
+            MessageBox.Show(Sender.ControlType.ToString());
+        }
+
         [Configuration("Option", 70, "Second",
             ControlType = ConfigurationEntry.ControlTypes.Slider,
             Minimum = 18, Maximum = 35, Validator = "Int32")]
@@ -71,6 +78,10 @@ namespace Common.Configuration.Test.GUI {
             SubText = "Slightly longer longer longer longer longer text here.")]
         public String FileDir { get; set; }
 
+        [Configuration("Multiline Text", 90, "Fourth",
+            ControlType = ConfigurationEntry.ControlTypes.MultiLineTextBox)]
+        public String MultilineText { get; set; }
+
         public MainForm() {
             InitializeComponent();
         }
@@ -86,6 +97,9 @@ namespace Common.Configuration.Test.GUI {
             Age = 23;
             OutDir = Environment.CurrentDirectory;
             FileDir = Application.ExecutablePath;
+            MultilineText = @"Line 1
+Line 2
+Line 3";
 
             // Show the configuration
             ConfigControl.Configuration = GenericConfiguration.CreateFor(this);

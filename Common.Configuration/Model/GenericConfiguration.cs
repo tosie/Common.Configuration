@@ -6,8 +6,10 @@ using System.Collections;
 using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Xml.Serialization;
 
 namespace Common.Configuration {
+    [XmlRoot("genericconfiguration")]
     public class GenericConfiguration : IEnumerable {
 
         #region Properties
@@ -101,8 +103,10 @@ namespace Common.Configuration {
             entry.Name = Property.Name;
             attr.ApplyToConfigurationEntry(entry);
             entry.Value = Property.GetValue(BoundObject, null);
+
             entry.PropertyChanged += new PropertyChangedEventHandler(entry_PropertyChanged);
             entry.QueryPossibleValues += new ConfigurationEntry.QueryPossibleValuesEvent(entry_QueryPossibleValues);
+            entry.ButtonEditor += new ConfigurationEntry.ButtonEditorHandler(entry_ButtonEditor);
 
             if (entry.SortKey == 0)
                 entry.SortKey = Data.Count;
@@ -110,6 +114,20 @@ namespace Common.Configuration {
             Add(entry);
 
             return entry;
+        }
+
+        void entry_ButtonEditor(ConfigurationEntry Sender) {
+            if (BoundObject == null)
+                return;
+
+            String method_name = Sender.Name + "ButtonEditor";
+
+            Type t = BoundObject.GetType();
+            MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (method == null)
+                return;
+
+            method.Invoke(BoundObject, new object[] { Sender });
         }
 
         void entry_QueryPossibleValues(ConfigurationEntry Sender, out object[] PossibleValues) {
