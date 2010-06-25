@@ -215,7 +215,7 @@ namespace Common.Configuration {
             ApplyBasicControlSettings(lbl, null, Row);
             
             // Layout
-            lbl.AutoSize = false;
+            lbl.AutoSize = true;
             lbl.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             lbl.TextAlign = ContentAlignment.TopRight;
             lbl.Margin = new Padding(
@@ -259,7 +259,7 @@ namespace Common.Configuration {
             TextBox control = AddTextBoxToRow(Entry, Row);
 
             control.Multiline = true;
-            control.Height = control.Height * 10;
+            control.Height = control.Height * 3;
             control.ScrollBars = ScrollBars.Vertical;
             control.WordWrap = true;
 
