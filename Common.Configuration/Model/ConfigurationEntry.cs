@@ -20,7 +20,7 @@ namespace Common.Configuration {
         public Boolean ReadOnly { get; set; }
         public Object Minimum { get; set; }
         public Object Maximum { get; set; }
-        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory, MultiLineTextBox };
+        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory, MultiLineTextBox, ComboBoxAsLinkLabel };
         public ControlTypes ControlType { get; set; }
         
         protected Object value;
@@ -81,13 +81,13 @@ namespace Common.Configuration {
             return result;
         }
 
-        public delegate void EditorHandler(ConfigurationEntry Sender, IWin32Window Owner);
+        public delegate Boolean EditorHandler(ConfigurationEntry Sender, IWin32Window Owner);
         public event EditorHandler Editor;
-        public void RaiseEditor(IWin32Window Owner) {
+        public Boolean RaiseEditor(IWin32Window Owner) {
             if (Editor == null)
-                return;
+                return false;
 
-            Editor(this, Owner);
+            return Editor(this, Owner);
         }
 
         public delegate String FormatValueHandler(ConfigurationEntry Sender, Object Value);

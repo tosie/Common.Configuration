@@ -129,6 +129,10 @@ namespace Common.Configuration {
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddComboBoxToRow(entry, row);
                             break;
+                        case ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel:
+                            AddHeadingToRow(entry.Text, row, false);
+                            ControlMapping[entry] = AddLinkLabelToRow(entry, row);
+                            break;
                         case ConfigurationEntry.ControlTypes.CheckBox:
                             ControlMapping[entry] = AddCheckBoxToRow(entry, row);
                             break;
@@ -285,6 +289,28 @@ namespace Common.Configuration {
             return cbx;
         }
 
+        LinkLabel AddLinkLabelToRow(ConfigurationEntry Entry, Int32 Row) {
+            LinkLabel control = new LinkLabel();
+            ApplyBasicControlSettings(control, Entry, Row);
+
+            // Layout
+            control.AutoSize = true;
+            control.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
+            control.TextAlign = ContentAlignment.TopLeft;
+            control.Margin = new Padding(
+                control.Margin.Left,
+                control.Margin.Top + (int)control.Font.Size,
+                control.Margin.Right,
+                control.Margin.Bottom);
+            control.AutoEllipsis = true;
+
+            // Content
+            control.Text = (Entry.Value == null ? "<Bitte auswählen>" : Entry.ValueAsString);
+            control.LinkClicked += new LinkLabelLinkClickedEventHandler(linklabel_LinkClicked);
+
+            return control;
+        }
+
         CheckBox AddCheckBoxToRow(ConfigurationEntry Entry, Int32 Row) {
             CheckBox cb = new CheckBox();
             ApplyBasicControlSettings(cb, Entry, Row);
@@ -305,9 +331,15 @@ namespace Common.Configuration {
             ApplyBasicControlSettings(lbl, Entry, Row);
 
             // Layout
-            lbl.AutoSize = false;
+            lbl.AutoSize = true;
             lbl.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
-            lbl.TextAlign = ContentAlignment.MiddleLeft;
+            lbl.TextAlign = ContentAlignment.TopLeft;
+            lbl.Margin = new Padding(
+                lbl.Margin.Left,
+                lbl.Margin.Top + (int)lbl.Font.Size,
+                lbl.Margin.Right,
+                lbl.Margin.Bottom);
+            lbl.AutoEllipsis = true;
             
             // Content
             lbl.Text = (Entry.Value == null ? "" : Entry.Value.ToString());
@@ -394,8 +426,8 @@ namespace Common.Configuration {
         }
 
         void btn_Click(object sender, EventArgs e) {
-            Button btn = (Button)sender;
-            ConfigurationEntry entry = (ConfigurationEntry)btn.Tag;
+            Button control = (Button)sender;
+            ConfigurationEntry entry = (ConfigurationEntry)control.Tag;
 
             if (entry.ControlType == ConfigurationEntry.ControlTypes.GenericConfiguration && entry.Value != null) {
                 GenericConfiguration value = (GenericConfiguration)entry.Value;
@@ -408,6 +440,63 @@ namespace Common.Configuration {
         string sld_FormatValue(LabelSlider Sender, int Value) {
             ConfigurationEntry entry = (ConfigurationEntry)Sender.Tag;
             return entry.GetValueAsString(GetValueOfControl(Sender));
+        }
+
+        private void ShowPopupMenu(Control sender, List<String> items, List<Object> tags, String selected, EventHandler handler) {
+            if (tags != null && tags.Count != items.Count) {
+                throw new ArgumentOutOfRangeException("tags", "Die Anzahl von +items+ und +tags+ muss gleich sein.");
+            }
+
+            cmsDynamicPopup.Items.Clear();
+            items.ForEach(text => {
+                ToolStripMenuItem item = new ToolStripMenuItem(text, null, handler);
+                if (tags != null) {
+                    item.Tag = tags[0];
+                    tags.RemoveAt(0);
+                }
+
+                item.Checked = (text == selected);
+                cmsDynamicPopup.Items.Add(item);
+            });
+            cmsDynamicPopup.Show(sender, 2, sender.Height + 2);
+        }
+
+        void linklabel_ItemSelected(object sender, EventArgs e) {
+            object[] options = (object[])(sender as ToolStripMenuItem).Tag;
+            LinkLabel control = (LinkLabel)options[0];
+            ConfigurationEntry entry = (ConfigurationEntry)control.Tag;
+            object value = options[1];
+
+            control.Text = (value == null ? "<Bitte auswählen>" : value.ToString());
+
+            if (ValidateValueOfControl(control, entry, ref value) && !AutoSave) {
+                // This control always saves after changing the value
+                Saving = true;
+                entry.Value = value;
+                Saving = false;
+            }
+        }
+
+        void linklabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            LinkLabel control = (LinkLabel)sender;
+            ConfigurationEntry entry = (ConfigurationEntry)control.Tag;
+            object[] values = entry.GetPossibleValues();
+            if (values == null || values.Length <= 0)
+                return;
+
+            string[] strings = new string[values.Length];
+            object[] tags = new object[values.Length];
+            for (int i = 0; i < values.Length; i++) {
+                strings[i] = values[i] == null ? "---" : values[i].ToString();
+                tags[i] = new object[] { sender, values[i] };
+            }
+
+            ShowPopupMenu(
+                control,
+                strings.ToList(),
+                tags.ToList(),
+                (entry.Value == null ? "" : entry.Value.ToString()),
+                new EventHandler(linklabel_ItemSelected));
         }
 
         #endregion
@@ -440,6 +529,8 @@ namespace Common.Configuration {
             } else if (Control is ComboBox) {
                 ComboBox cbx = (Control as ComboBox);
                 return (cbx.SelectedIndex >= 0 ? cbx.Items[cbx.SelectedIndex] : null);
+            } else if (Control is LinkLabel) {
+                return (Control as LinkLabel).Tag;
             } else if (Control is CheckBox) {
                 return (Control as CheckBox).Checked;
             } else if (Control is LabelSlider) {
@@ -493,11 +584,14 @@ namespace Common.Configuration {
                 case ConfigurationEntry.ControlTypes.ComboBox:
                     ((ComboBox)control).SelectedItem = ((ComboBox)control).Items.IndexOf(entry.Value);
                     break;
+                case ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel:
+                    ((LinkLabel)control).Text = (entry.Value == null ? "<Bitte auswählen>" : entry.Value.ToString());
+                    break;
                 case ConfigurationEntry.ControlTypes.CheckBox:
                     ((CheckBox)control).Checked = (entry.Value == null ? false : entry.Value is Boolean ? (Boolean)entry.Value : Boolean.Parse(entry.Value.ToString()));
                     break;
                 case ConfigurationEntry.ControlTypes.Label:
-                    ((Label)control).Text = entry.Value == null ? "" : entry.Value.ToString();
+                    ((Label)control).Text = entry.Value == null ? "" : entry.ValueAsString;
                     break;
                 case ConfigurationEntry.ControlTypes.GenericConfiguration:
                     // Ignore this one

@@ -12,9 +12,17 @@ namespace Common.Configuration {
 
         #region Properties / Class Variables
 
+        Boolean first = true;
+
         public Int32 Value {
             get { return trackBar.Value; }
-            set { trackBar.Value = value; }
+            set {
+                trackBar.Value = value;
+                if (first) {
+                    first = false;
+                    UpdateLabel();
+                }
+            }
         }
 
         public Int32 Minimum {
@@ -75,11 +83,15 @@ namespace Common.Configuration {
 
         #endregion
 
-        #region TrackBar Handling
+        #region Label and TrackBar Handling
+
+        private void UpdateLabel() {
+            valueLabel.Text = RaiseFormatValueEvent(trackBar.Value);
+        }
 
         private void trackBar_ValueChanged(object sender, EventArgs e) {
             RaiseValueChanged();
-            valueLabel.Text = RaiseFormatValueEvent(trackBar.Value);
+            UpdateLabel();
         }
 
         #endregion

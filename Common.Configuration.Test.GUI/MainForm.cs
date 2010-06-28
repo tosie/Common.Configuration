@@ -44,6 +44,15 @@ namespace Common.Configuration.Test.GUI {
             }
         }
 
+        [Configuration("Option", 30, "First",
+            ControlType = ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel)]
+        public String OptionLink { get; set; }
+        public object[] OptionLinkPossibleValues {
+            get {
+                return new object[] { "Option 1", "Option 2", "Option 3" };
+            }
+        }
+
         [Configuration("Checker", 40, "Second",
             ControlType = ConfigurationEntry.ControlTypes.CheckBox,
             Validator = "Boolean")]
@@ -63,7 +72,7 @@ namespace Common.Configuration.Test.GUI {
 
         [Configuration("Option", 70, "Second",
             ControlType = ConfigurationEntry.ControlTypes.Slider,
-            Minimum = 18, Maximum = 35, Validator = "Int32")]
+            Minimum = 10, Maximum = 35, Validator = "Int32")]
         public Int32 Age { get; set; }
 
         [Configuration("OutDir", 80, "Third",
@@ -91,18 +100,42 @@ namespace Common.Configuration.Test.GUI {
             NewName = "Mika";
             Description = "Somebody";
             Option = "Option 2";
+            OptionLink = "Option 3";
             DoSomething = true;
             ReadOnlyText = "Not to be edited.";
             WithAButton = "something";
-            Age = 23;
+            Age = 10;
             OutDir = Environment.CurrentDirectory;
             FileDir = Application.ExecutablePath;
             MultilineText = @"Line 1
 Line 2
 Line 3";
 
+            // Create a second instance of the GenericConfiguration class
+            GenericConfiguration second = new GenericConfiguration();
+            second.Add(new ConfigurationEntry() {
+                Name = "Slider",
+                Text = "Slider",
+                GroupKey = "RR",
+                SortKey = 1,
+                ControlType = ConfigurationEntry.ControlTypes.Slider,
+                Minimum = 1,
+                Maximum = 30
+            }, 5);
+            second.Add(new ConfigurationEntry() {
+                Name = "CheckBox",
+                Text = "CheckBox",
+                GroupKey = "RR",
+                SortKey = 2,
+                ControlType = ConfigurationEntry.ControlTypes.CheckBox
+            });
+
             // Show the configuration
-            ConfigControl.Configuration = GenericConfiguration.CreateFor(this);
+            //ConfigControl.Configuration = GenericConfiguration.CreateFor(this);
+            ConfigControl.MultipleConfigs = (new GenericConfiguration[] {
+                GenericConfiguration.CreateFor(this),
+                second
+            }).ToList();
         }
     }
 }

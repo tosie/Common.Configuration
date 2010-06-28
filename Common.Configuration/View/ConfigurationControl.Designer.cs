@@ -23,7 +23,9 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.Table = new System.Windows.Forms.TableLayoutPanel();
+            this.cmsDynamicPopup = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SuspendLayout();
             // 
             // Table
@@ -42,6 +44,14 @@
             this.Table.Size = new System.Drawing.Size(443, 446);
             this.Table.TabIndex = 1;
             // 
+            // cmsDynamicPopup
+            // 
+            this.cmsDynamicPopup.Name = "cmsModels";
+            this.cmsDynamicPopup.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.cmsDynamicPopup.ShowCheckMargin = true;
+            this.cmsDynamicPopup.ShowImageMargin = false;
+            this.cmsDynamicPopup.Size = new System.Drawing.Size(153, 26);
+            // 
             // ConfigurationControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -58,5 +68,6 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel Table;
+        private System.Windows.Forms.ContextMenuStrip cmsDynamicPopup;
     }
 }

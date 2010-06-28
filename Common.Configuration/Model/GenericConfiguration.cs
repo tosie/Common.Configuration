@@ -117,18 +117,18 @@ namespace Common.Configuration {
             return entry;
         }
 
-        void entry_Editor(ConfigurationEntry Sender, IWin32Window Owner) {
+        bool entry_Editor(ConfigurationEntry Sender, IWin32Window Owner) {
             if (BoundObject == null)
-                return;
+                return false;
 
             String method_name = Sender.Name + "Editor";
 
             Type t = BoundObject.GetType();
             MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             if (method == null)
-                return;
+                return false;
 
-            method.Invoke(BoundObject, new object[] { Sender, Owner });
+            return (Boolean)method.Invoke(BoundObject, new object[] { Sender, Owner });
         }
 
         void entry_QueryPossibleValues(ConfigurationEntry Sender, out object[] PossibleValues) {
