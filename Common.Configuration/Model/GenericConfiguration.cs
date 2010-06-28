@@ -108,6 +108,7 @@ namespace Common.Configuration {
             entry.PropertyChanged += new PropertyChangedEventHandler(entry_PropertyChanged);
             entry.QueryPossibleValues += new ConfigurationEntry.QueryPossibleValuesEvent(entry_QueryPossibleValues);
             entry.Editor += new ConfigurationEntry.EditorHandler(entry_Editor);
+            entry.FormatValue += new ConfigurationEntry.FormatValueHandler(entry_FormatValue);
 
             if (entry.SortKey == 0)
                 entry.SortKey = Data.Count;
@@ -162,6 +163,22 @@ namespace Common.Configuration {
                 return;
 
             prop.SetValue(BoundObject, entry.Value, null);
+        }
+
+        string entry_FormatValue(ConfigurationEntry Sender, object Value) {
+            String value_as_string = (Value == null ? "" : Value.ToString());
+
+            if (BoundObject == null)
+                return value_as_string;
+
+            String method_name = Sender.Name + "FormatValue";
+
+            Type t = BoundObject.GetType();
+            MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (method == null)
+                return value_as_string;
+
+            return (string)method.Invoke(BoundObject, new object[] { Sender, Value });
         }
 
         public static GenericConfiguration CreateFor(Object BoundObject) {
