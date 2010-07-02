@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ConfigurationAttribute.cs" />
+    <Compile Include="Controller\DirectInvoker.cs" />
     <Compile Include="Model\GenericConfiguration.cs" />
     <Compile Include="Model\ConfigurationEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,9 +103,6 @@
     <EmbeddedResource Include="View\LabelSlider.resx">
       <DependentUpon>LabelSlider.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controller\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -126,10 +126,11 @@ namespace Common.Configuration {
 
             Type t = BoundObject.GetType();
             MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
             if (method == null)
                 return false;
 
-            return (Boolean)method.Invoke(BoundObject, new object[] { Sender, Owner });
+            return (bool)DirectInvoker.InvokeDirect(method, BoundObject, new object[] { Sender, Owner });
         }
 
         void entry_QueryPossibleValues(ConfigurationEntry Sender, out object[] PossibleValues) {
