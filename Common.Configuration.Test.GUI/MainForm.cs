@@ -53,16 +53,11 @@ namespace Common.Configuration.Test.GUI {
             }
         }
 
-        [Configuration("Checker", 40, "Second",
-            ControlType = ConfigurationEntry.ControlTypes.CheckBox,
-            Validator = "Boolean")]
-        public Boolean DoSomething { get; set; }
-
-        [Configuration("A Label", 50, "Second",
+        [Configuration("A Label", 40, "Second",
             ControlType = ConfigurationEntry.ControlTypes.Label)]
         public String ReadOnlyText { get; set; }
 
-        [Configuration("Button", 60, "Second",
+        [Configuration("Button", 50, "Second",
             ControlType = ConfigurationEntry.ControlTypes.Button)]
         public String WithAButton { get; set; }
 
@@ -70,10 +65,20 @@ namespace Common.Configuration.Test.GUI {
             MessageBox.Show(Sender.ControlType.ToString());
         }
 
-        [Configuration("Option", 70, "Second",
+        [Configuration("Checker", 60, "Second",
+            ControlType = ConfigurationEntry.ControlTypes.CheckBox,
+            Validator = "Boolean")]
+        public Boolean DoSomething { get; set; }
+
+        [Configuration("Option", 70, "Third",
             ControlType = ConfigurationEntry.ControlTypes.Slider,
             Minimum = 10, Maximum = 35, Validator = "Int32")]
         public Int32 Age { get; set; }
+
+        [Configuration("Checker2", 75, "Third",
+            ControlType = ConfigurationEntry.ControlTypes.CheckBox,
+            Validator = "Boolean")]
+        public Boolean DoSomething2 { get; set; }
 
         [Configuration("OutDir", 80, "Third",
             ControlType = ConfigurationEntry.ControlTypes.Directory,

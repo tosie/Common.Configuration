@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Common.Configuration {
     public partial class ConfigurationControl : UserControl {
@@ -68,7 +69,7 @@ namespace Common.Configuration {
 
         private void AddConfigurationEntriesToTable(GenericConfiguration Config) {
             // Build entry groups (GroupKey)
-            Int32 first_row = Table.RowStyles.Count;
+            Int32 first_row = Table.RowCount;
             Int32 total_rows = 0;
             Dictionary<Object, List<ConfigurationEntry>> groups = new Dictionary<Object, List<ConfigurationEntry>>();
             foreach (ConfigurationEntry entry in Config) {
@@ -98,6 +99,9 @@ namespace Common.Configuration {
             foreach (List<ConfigurationEntry> list in groups.Values) {
                 list.Sort((a, b) => a.SortKey - b.SortKey);
             }
+
+            // Increase the row counter for the final label (see the end of this method)
+            total_rows++;
 
             // Setup the container panel
             Table.RowCount += total_rows;
@@ -203,7 +207,7 @@ namespace Common.Configuration {
 
         #region Control Creation
 
-        void ApplyBasicControlSettings(Control Control, ConfigurationEntry Entry, Int32 Row) {
+        void ApplyBasicControlSettings(Control Control, ConfigurationEntry Entry, Int32 Column, Int32 Row) {
             if (Entry != null) {
                 Control.Tag = Entry;
                 Control.Enabled = !Entry.ReadOnly;
@@ -211,12 +215,12 @@ namespace Common.Configuration {
             }
 
             Table.Controls.Add(Control);
-            Table.SetCellPosition(Control, new TableLayoutPanelCellPosition(1, Row));
+            Table.SetCellPosition(Control, new TableLayoutPanelCellPosition(Column, Row));
         }
 
         Label AddHeadingToRow(String Text, Int32 Row, Boolean GroupHeader) {
             Label lbl = new Label();
-            ApplyBasicControlSettings(lbl, null, Row);
+            ApplyBasicControlSettings(lbl, null, 0, Row);
             
             // Layout
             lbl.AutoSize = true;
@@ -234,7 +238,6 @@ namespace Common.Configuration {
             lbl.Click += new EventHandler(rowHeading_Click);
 
             // Position inside table
-            Table.SetCellPosition(lbl, new TableLayoutPanelCellPosition(0, Row));
             if (GroupHeader) {
                 lbl.Margin = new Padding(10, (Row == 0 ? 0 : 10), 0, 0);
                 lbl.Font = new Font(lbl.Font.FontFamily, lbl.Font.Size * 1.2f, FontStyle.Bold);
@@ -247,7 +250,7 @@ namespace Common.Configuration {
 
         TextBox AddTextBoxToRow(ConfigurationEntry Entry, Int32 Row) {
             TextBox control = new TextBox();
-            ApplyBasicControlSettings(control, Entry, Row);
+            ApplyBasicControlSettings(control, Entry, 1, Row);
             
             // Layout
             control.Anchor = AnchorStyles.Right | AnchorStyles.Left;
@@ -272,7 +275,7 @@ namespace Common.Configuration {
 
         ComboBox AddComboBoxToRow(ConfigurationEntry Entry, Int32 Row) {
             ComboBox cbx = new ComboBox();
-            ApplyBasicControlSettings(cbx, Entry, Row);
+            ApplyBasicControlSettings(cbx, Entry, 1, Row);
             
             // Layout
             cbx.Anchor = AnchorStyles.Right | AnchorStyles.Left;
@@ -291,7 +294,7 @@ namespace Common.Configuration {
 
         LinkLabel AddLinkLabelToRow(ConfigurationEntry Entry, Int32 Row) {
             LinkLabel control = new LinkLabel();
-            ApplyBasicControlSettings(control, Entry, Row);
+            ApplyBasicControlSettings(control, Entry, 1, Row);
 
             // Layout
             control.AutoSize = true;
@@ -313,7 +316,7 @@ namespace Common.Configuration {
 
         CheckBox AddCheckBoxToRow(ConfigurationEntry Entry, Int32 Row) {
             CheckBox cb = new CheckBox();
-            ApplyBasicControlSettings(cb, Entry, Row);
+            ApplyBasicControlSettings(cb, Entry, 1, Row);
             
             // Layout
             cb.Anchor = AnchorStyles.Right | AnchorStyles.Left;
@@ -328,7 +331,7 @@ namespace Common.Configuration {
 
         Label AddLabelToRow(ConfigurationEntry Entry, Int32 Row) {
             Label lbl = new Label();
-            ApplyBasicControlSettings(lbl, Entry, Row);
+            ApplyBasicControlSettings(lbl, Entry, 1, Row);
 
             // Layout
             lbl.AutoSize = true;
@@ -349,7 +352,7 @@ namespace Common.Configuration {
 
         Label AddSubTextLabelToRow(ConfigurationEntry Entry, Int32 Row) {
             Label lbl = new Label();
-            ApplyBasicControlSettings(lbl, Entry, Row);
+            ApplyBasicControlSettings(lbl, Entry, 1, Row);
 
             // Layout
             lbl.AutoSize = true;
@@ -367,7 +370,7 @@ namespace Common.Configuration {
 
         Button AddButtonToRow(ConfigurationEntry Entry, Int32 Row) {
             Button btn = new Button();
-            ApplyBasicControlSettings(btn, Entry, Row);
+            ApplyBasicControlSettings(btn, Entry, 1, Row);
             
             // Layout
             btn.BackColor = SystemColors.ButtonFace;
@@ -381,7 +384,7 @@ namespace Common.Configuration {
 
         LabelSlider AddLabelSliderToRow(ConfigurationEntry Entry, Int32 Row) {
             LabelSlider sld = new LabelSlider();
-            ApplyBasicControlSettings(sld, Entry, Row);
+            ApplyBasicControlSettings(sld, Entry, 1, Row);
 
             // Layout
             sld.Anchor = AnchorStyles.Right | AnchorStyles.Left;
@@ -400,7 +403,7 @@ namespace Common.Configuration {
 
         FileSystemBrowser AddFileSystemBrowserToRow(ConfigurationEntry Entry, Int32 Row, Boolean IsDirectoryBrowser) {
             FileSystemBrowser control = new FileSystemBrowser();
-            ApplyBasicControlSettings(control, Entry, Row);
+            ApplyBasicControlSettings(control, Entry, 1, Row);
 
             // Layout
             control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
