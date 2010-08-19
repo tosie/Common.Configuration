@@ -308,7 +308,7 @@ namespace Common.Configuration {
             control.AutoEllipsis = true;
 
             // Content
-            control.Text = (Entry.Value == null ? "<Bitte auswählen>" : Entry.ValueAsString);
+            control.Text = Entry.GetValueAsString(Entry.Value, "<Bitte auswählen>");
             control.LinkClicked += new LinkLabelLinkClickedEventHandler(linklabel_LinkClicked);
 
             return control;
@@ -470,7 +470,7 @@ namespace Common.Configuration {
             ConfigurationEntry entry = (ConfigurationEntry)control.Tag;
             object value = options[1];
 
-            control.Text = (value == null ? "<Bitte auswählen>" : value.ToString());
+            control.Text = entry.GetValueAsString(value, "<Bitte auswählen>");
 
             if (ValidateValueOfControl(control, entry, ref value) && !AutoSave) {
                 // This control always saves after changing the value
@@ -490,7 +490,7 @@ namespace Common.Configuration {
             string[] strings = new string[values.Length];
             object[] tags = new object[values.Length];
             for (int i = 0; i < values.Length; i++) {
-                strings[i] = values[i] == null ? "---" : values[i].ToString();
+                strings[i] = entry.GetValueAsString(values[i], "---");
                 tags[i] = new object[] { sender, values[i] };
             }
 

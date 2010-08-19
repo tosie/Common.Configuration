@@ -47,10 +47,14 @@ namespace Common.Configuration {
         }
 
         public String GetValueAsString(Object Value) {
+            return GetValueAsString(Value, "");
+        }
+
+        public String GetValueAsString(Object Value, String NullString) {
             String result = "";
 
             if (!RaiseFormatValue(Value, out result))
-                result = (value == null ? "" : Value.ToString());
+                result = (value == null ? NullString : Value.ToString());
 
             return result;
         }
