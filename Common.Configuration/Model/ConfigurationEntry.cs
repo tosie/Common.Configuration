@@ -217,6 +217,13 @@ namespace Common.Configuration {
                 return;
 
             String val = Value.ToString();
+
+            // Accept empty strings
+            if (String.IsNullOrEmpty(val)) {
+                Valid = true;
+                return;
+            }
+
             Valid = File.Exists(val);
         }
 
@@ -226,6 +233,13 @@ namespace Common.Configuration {
                 return;
 
             String val = Value.ToString();
+
+            // Accept empty strings
+            if (String.IsNullOrEmpty(val)) {
+                Valid = true;
+                return;
+            }
+
             Valid = Directory.Exists(val);
         }
 

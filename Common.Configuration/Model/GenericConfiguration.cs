@@ -141,7 +141,7 @@ namespace Common.Configuration {
             String property_name = Sender.Name + "PossibleValues";
 
             Type t = BoundObject.GetType();
-            PropertyInfo prop = t.GetProperty(property_name);
+            PropertyInfo prop = t.GetProperty(property_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             if (prop == null)
                 return;
 

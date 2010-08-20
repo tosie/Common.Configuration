@@ -256,7 +256,7 @@ namespace Common.Configuration {
             control.Anchor = AnchorStyles.Right | AnchorStyles.Left;
 
             // Content
-            control.Text = (Entry.Value == null ? "" : Entry.Value.ToString());
+            control.Text = Entry.ValueAsString;
             control.TextChanged += new EventHandler(control_ValueChanged);
 
             return control;
@@ -345,7 +345,7 @@ namespace Common.Configuration {
             lbl.AutoEllipsis = true;
             
             // Content
-            lbl.Text = (Entry.Value == null ? "" : Entry.Value.ToString());
+            lbl.Text = Entry.ValueAsString;
 
             return lbl;
         }
@@ -410,7 +410,7 @@ namespace Common.Configuration {
 
             // Content
             control.IsDirectoryBrowser = IsDirectoryBrowser;
-            control.Value = (Entry.Value == null ? "" : Entry.Value.ToString());
+            control.Value = Entry.ValueAsString;
             control.ValueChanged += new EventHandler(control_ValueChanged);
 
             return control;
@@ -498,7 +498,7 @@ namespace Common.Configuration {
                 control,
                 strings.ToList(),
                 tags.ToList(),
-                (entry.Value == null ? "" : entry.Value.ToString()),
+                entry.ValueAsString,
                 new EventHandler(linklabel_ItemSelected));
         }
 
@@ -582,19 +582,19 @@ namespace Common.Configuration {
             switch (entry.ControlType) {
                 case ConfigurationEntry.ControlTypes.TextBox:
                 case ConfigurationEntry.ControlTypes.MultiLineTextBox:
-                    ((TextBox)control).Text = entry.Value == null ? "" : entry.Value.ToString();
+                    ((TextBox)control).Text = entry.ValueAsString;
                     break;
                 case ConfigurationEntry.ControlTypes.ComboBox:
                     ((ComboBox)control).SelectedItem = ((ComboBox)control).Items.IndexOf(entry.Value);
                     break;
                 case ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel:
-                    ((LinkLabel)control).Text = (entry.Value == null ? "<Bitte auswählen>" : entry.Value.ToString());
+                    ((LinkLabel)control).Text = entry.GetValueAsString(entry.Value, "<Bitte auswählen>");
                     break;
                 case ConfigurationEntry.ControlTypes.CheckBox:
                     ((CheckBox)control).Checked = (entry.Value == null ? false : entry.Value is Boolean ? (Boolean)entry.Value : Boolean.Parse(entry.Value.ToString()));
                     break;
                 case ConfigurationEntry.ControlTypes.Label:
-                    ((Label)control).Text = entry.Value == null ? "" : entry.ValueAsString;
+                    ((Label)control).Text = entry.ValueAsString;
                     break;
                 case ConfigurationEntry.ControlTypes.GenericConfiguration:
                     // Ignore this one
@@ -607,7 +607,7 @@ namespace Common.Configuration {
                     break;
                 case ConfigurationEntry.ControlTypes.File:
                 case ConfigurationEntry.ControlTypes.Directory:
-                    ((FileSystemBrowser)control).Value = entry.Value == null ? "" : entry.Value.ToString();
+                    ((FileSystemBrowser)control).Value = entry.ValueAsString;
                     break;
                 default:
                     break;
@@ -670,7 +670,12 @@ namespace Common.Configuration {
                 } catch { }
 
                 if (value_extracted) {
-                    entry.Value = value;
+                    try {
+                        entry.Value = value;
+                    } catch (ArgumentException ex) {
+                        Trace.WriteLine(ex.Message, "ConfigurationControl");
+                    }
+
                     UpdateControlWithNewValue(entry, new PropertyChangedEventArgs("Value"));
                 }
             }
