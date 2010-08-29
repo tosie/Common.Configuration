@@ -22,14 +22,14 @@ goto end
 
 :msbuild_not_found
 echo MSBuild not found (exptected version of .NET Framework: %framework_version%)
-pause
+if not "%1" == "batch" pause
 exit 1
 
 :build_error
 echo Error while building the project.
-pause
+if not "%1" == "batch" pause
 exit 2
 
 :end
-pause
+if not "%1" == "batch" pause
 exit 0
