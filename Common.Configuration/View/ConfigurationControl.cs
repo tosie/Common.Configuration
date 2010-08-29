@@ -626,31 +626,41 @@ namespace Common.Configuration {
         #region Configuration Handling
 
         private void ShowSingleConfiguration() {
-            ClearTable();
-
-            if (configuration == null)
-                return;
-
             Loading = true;
+            Table.Hide();
 
-            AddConfigurationEntriesToTable(Configuration);
-            AddDummyRow();
+            try {
+                ClearTable();
 
-            Loading = false;
+                if (configuration == null)
+                    return;
+
+                AddConfigurationEntriesToTable(Configuration);
+                AddDummyRow();
+            } finally {
+                Table.Show();
+                Loading = false;
+            }
         }
 
         private void ShowMultipleConfigurations() {
-            ClearTable();
-
-            if (multipleConfigs == null)
-                return;
-
             Loading = true;
+            Table.Hide();
 
-            MultipleConfigs.ForEach(c => AddConfigurationEntriesToTable(c));
-            AddDummyRow();
+            try {
+                ClearTable();
 
-            Loading = false;
+                if (multipleConfigs == null)
+                    return;
+
+                Loading = true;
+
+                MultipleConfigs.ForEach(c => AddConfigurationEntriesToTable(c));
+                AddDummyRow();
+            } finally {
+                Table.Show();
+                Loading = false;
+            }
         }
 
         public void Save() {
