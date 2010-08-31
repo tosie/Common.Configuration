@@ -4,3 +4,5 @@ obj
 TestResults
 *.user
 Release
+*.vsp
+*.psess
