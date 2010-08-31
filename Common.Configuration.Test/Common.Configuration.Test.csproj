@@ -70,14 +70,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationControlTest.cs" />
-    <Compile Include="ConfigurationEntryTest.cs" />
-    <Compile Include="GenericConfigurationTest.cs" />
-    <Compile Include="LabelSliderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
     <Shadow Include="Test References\Common.Configuration.accessor" />
