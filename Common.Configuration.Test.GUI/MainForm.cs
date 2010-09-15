@@ -53,6 +53,21 @@ namespace Common.Configuration.Test.GUI {
             }
         }
 
+        [Configuration("ButtonAsLink", 31, "First",
+            ControlType = ConfigurationEntry.ControlTypes.ButtonAsLinkLabel)]
+        public String ButtonLink { get; set; }
+        private bool ButtonLinkEditor(ConfigurationEntry Sender, IWin32Window Owner) {
+            MessageBox.Show("test");
+            Sender.Value = "new value";
+            return true;
+        }
+        private string ButtonLinkFormatValue(ConfigurationEntry Sender, Object Value) {
+            if (Value is String)
+                return (Value as String);
+            else
+                return "test";
+        }
+
         [Configuration("A Label", 40, "Second",
             ControlType = ConfigurationEntry.ControlTypes.Label)]
         public String ReadOnlyText { get; set; }

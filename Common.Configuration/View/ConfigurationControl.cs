@@ -134,6 +134,7 @@ namespace Common.Configuration {
                             ControlMapping[entry] = AddComboBoxToRow(entry, row);
                             break;
                         case ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel:
+                        case ConfigurationEntry.ControlTypes.ButtonAsLinkLabel: 
                             AddHeadingToRow(entry.Text, row, false);
                             ControlMapping[entry] = AddLinkLabelToRow(entry, row);
                             break;
@@ -483,23 +484,34 @@ namespace Common.Configuration {
         void linklabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             LinkLabel control = (LinkLabel)sender;
             ConfigurationEntry entry = (ConfigurationEntry)control.Tag;
-            object[] values = entry.GetPossibleValues();
-            if (values == null || values.Length <= 0)
-                return;
 
-            string[] strings = new string[values.Length];
-            object[] tags = new object[values.Length];
-            for (int i = 0; i < values.Length; i++) {
-                strings[i] = entry.GetValueAsString(values[i], "---");
-                tags[i] = new object[] { sender, values[i] };
+            if (entry.ControlType == ConfigurationEntry.ControlTypes.ButtonAsLinkLabel) {
+
+                if (entry.RaiseEditor(this.ParentForm)) {
+                    control.Text = entry.GetValueAsString(entry.Value, "<Bitte auswählen>");
+                }
+            
+            } else if (entry.ControlType == ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel) {
+            
+                object[] values = entry.GetPossibleValues();
+                if (values == null || values.Length <= 0)
+                    return;
+
+                string[] strings = new string[values.Length];
+                object[] tags = new object[values.Length];
+                for (int i = 0; i < values.Length; i++) {
+                    strings[i] = entry.GetValueAsString(values[i], "---");
+                    tags[i] = new object[] { sender, values[i] };
+                }
+
+                ShowPopupMenu(
+                    control,
+                    strings.ToList(),
+                    tags.ToList(),
+                    entry.ValueAsString,
+                    new EventHandler(linklabel_ItemSelected));
+
             }
-
-            ShowPopupMenu(
-                control,
-                strings.ToList(),
-                tags.ToList(),
-                entry.ValueAsString,
-                new EventHandler(linklabel_ItemSelected));
         }
 
         #endregion
@@ -588,6 +600,7 @@ namespace Common.Configuration {
                     ((ComboBox)control).SelectedItem = ((ComboBox)control).Items.IndexOf(entry.Value);
                     break;
                 case ConfigurationEntry.ControlTypes.ComboBoxAsLinkLabel:
+                case ConfigurationEntry.ControlTypes.ButtonAsLinkLabel:
                     ((LinkLabel)control).Text = entry.GetValueAsString(entry.Value, "<Bitte auswählen>");
                     break;
                 case ConfigurationEntry.ControlTypes.CheckBox:

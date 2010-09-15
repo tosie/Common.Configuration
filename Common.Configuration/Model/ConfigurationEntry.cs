@@ -20,7 +20,7 @@ namespace Common.Configuration {
         public Boolean ReadOnly { get; set; }
         public Object Minimum { get; set; }
         public Object Maximum { get; set; }
-        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory, MultiLineTextBox, ComboBoxAsLinkLabel };
+        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory, MultiLineTextBox, ComboBoxAsLinkLabel, ButtonAsLinkLabel };
         public ControlTypes ControlType { get; set; }
         
         protected Object value;
