@@ -13,7 +13,7 @@ goto do_build
 :do_build
 echo Building the project ...
 if not exist %outdir% mkdir %outdir%
-%msb% /target:Build /property:Configuration=Push /property:OutDir=..\%releasedir%\ "%project%"
+%msb% /target:Build /property:Configuration=Release /property:OutDir=..\%releasedir%\ "%project%"
 if errorlevel 1 goto build_error
 goto build_ok
 
