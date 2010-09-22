@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Attributes\ConfigurationAttribute.cs" />
     <Compile Include="Controller\DirectInvoker.cs" />
+    <Compile Include="Controller\Profiler.cs" />
     <Compile Include="Model\GenericConfiguration.cs" />
     <Compile Include="Model\ConfigurationEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
