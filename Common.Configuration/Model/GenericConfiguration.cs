@@ -92,6 +92,20 @@ namespace Common.Configuration {
 
         #region ConfigurationAttribute
 
+        /// <summary>
+        /// Returns the type of the object. If the type is of a Castle.Proxies type, the base type is returned.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        protected static Type GetDirectType(Object obj) {
+            Type t = obj.GetType();
+
+            if (t.Namespace == "Castle.Proxies")
+                t = t.BaseType;
+
+            return t;
+        }
+
         protected ConfigurationEntry AddByPropertyWithAttribute(Object BoundObject, PropertyInfo Property) {
             Object[] attrs = Property.GetCustomAttributes(typeof(ConfigurationAttribute), true);
             if (attrs.Length <= 0)
@@ -124,7 +138,7 @@ namespace Common.Configuration {
 
             String method_name = Sender.Name + "Editor";
 
-            Type t = BoundObject.GetType();
+            Type t = GetDirectType(BoundObject);
             MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
             if (method == null)
@@ -140,7 +154,7 @@ namespace Common.Configuration {
 
             String property_name = Sender.Name + "PossibleValues";
 
-            Type t = BoundObject.GetType();
+            Type t = GetDirectType(BoundObject);
             PropertyInfo prop = t.GetProperty(property_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             if (prop == null)
                 return;
@@ -158,7 +172,7 @@ namespace Common.Configuration {
             ConfigurationEntry entry = (ConfigurationEntry)sender;
             
             // Try setting the value of the corresponding property of the BoundObject
-            Type t = BoundObject.GetType();
+            Type t = GetDirectType(BoundObject);
             PropertyInfo prop = t.GetProperty(entry.Name);
             if (prop == null)
                 return;
@@ -174,7 +188,7 @@ namespace Common.Configuration {
 
             String method_name = Sender.Name + "FormatValue";
 
-            Type t = BoundObject.GetType();
+            Type t = GetDirectType(BoundObject);
             MethodInfo method = t.GetMethod(method_name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             if (method == null)
                 return value_as_string;
@@ -186,7 +200,7 @@ namespace Common.Configuration {
             GenericConfiguration config = new GenericConfiguration();
             config.BoundObject = BoundObject;
 
-            Type t = BoundObject.GetType();
+            Type t = GetDirectType(BoundObject);
             foreach (PropertyInfo prop in t.GetProperties()) {
                 config.AddByPropertyWithAttribute(BoundObject, prop);
             }
