@@ -39,7 +39,7 @@ namespace Common.Configuration.Test.GUI {
         }
 
         string config_FormatValue(ConfigurationEntry Sender, object Value) {
-            return (Value == null ? "" : Value.ToString().ToUpper());
+            return (Value == null ? "" : Value.ToString());
         }
 
         void config_ValidateValue(ConfigurationEntry Sender, ref object Value, out bool Valid) {

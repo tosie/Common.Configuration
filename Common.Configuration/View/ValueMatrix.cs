@@ -6,7 +6,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Reflection;
 using System.Collections;
 
 namespace Common.Configuration {
@@ -26,19 +25,12 @@ namespace Common.Configuration {
                     return;
 
                 configEntry = value;
+                Reset();
                 RefreshView();
             }
         }
 
         protected Dictionary<object, Dictionary<object, string>> Data = null;
-
-        protected MethodInfo FromEnumerator = null;
-
-        protected PropertyInfo FromData = null;
-
-        protected MethodInfo ToEnumerator = null;
-
-        protected PropertyInfo ToData = null;
 
         #endregion
 
@@ -54,129 +46,36 @@ namespace Common.Configuration {
 
         #region Data Handling
 
-        protected virtual string GetDefaultPropertyName(Type type) {
-            if (type == null)
-                return "Item";
-            
-            var attrs = type.GetCustomAttributes(typeof(DefaultMemberAttribute), true);
-            if (attrs == null || attrs.Length <= 0)
-                return "Item";
-
-            var attr = (DefaultMemberAttribute)attrs[0];
-            return attr.MemberName;
-        }
-
-        protected virtual MethodInfo GetDictionaryEnumerator(Type type) {
-            if (type == null)
-                return null;
-
-            // There might be more than one GetEnumerator method, so just take the first one ...
-            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-            if (methods == null || methods.Length <= 0)
-                return null;
-
-            for (int i = 0; i < methods.Length; i++) {
-                var method = methods[i];
-                if (method.Name == "GetEnumerator") {
-                    return method;
-                    //if (method.ReturnType == typeof(IDictionaryEnumerator))
-                    //    return method;
-                }
-            }
-
-            return null;
-        }
-
         protected virtual void Reset() {
             Grid.Columns.Clear();
             Grid.Rows.Clear();
 
             Data = null;
-            FromEnumerator = null;
-            FromData = null;
-            ToEnumerator = null;
-            ToData = null;
-        }
-
-        protected virtual bool PreparePropertyReflection() {
-            if (configEntry == null)
-                throw new ArgumentNullException("configEntry");
-
-            if (configEntry.Value == null)
-                return false;
-
-            try {
-                Type from = configEntry.Value.GetType();
-                FromEnumerator = GetDictionaryEnumerator(from);
-                if (FromEnumerator == null)
-                    return false;
-                var default_indexer_name = GetDefaultPropertyName(from);
-                FromData = from.GetProperty(default_indexer_name);
-                if (FromData == null)
-                    return false;
-
-                Type to = FromData.PropertyType;
-                ToEnumerator = GetDictionaryEnumerator(to);
-                if (ToEnumerator == null)
-                    return false;
-                default_indexer_name = GetDefaultPropertyName(to);
-                ToData = to.GetProperty(default_indexer_name);
-                if (ToData == null)
-                    return false;
-
-                return true;
-            } catch {
-                Reset();
-                return false;
-            }
         }
 
         protected virtual void LoadData() {
             if (Data != null)
                 return;
             
-            Reset();
             Data = new Dictionary<object, Dictionary<object, string>>();
 
             if (configEntry == null)
                 return;
 
-            if (!PreparePropertyReflection())
+            if (!(configEntry.Value is IDictionary))
                 return;
 
-            var from_enumerator = (IDictionaryEnumerator)FromEnumerator.Invoke(configEntry.Value, null);
-            if (from_enumerator == null)
-                return;
+            var from_dict = (IDictionary)configEntry.Value;
 
-            from_enumerator.Reset();
-            while (true) {
-                from_enumerator.MoveNext();
-
-                object from = null;
-                try {
-                    from = from_enumerator.Key;
-                } catch (InvalidOperationException) {
-                    break;
-                }
-
+            foreach (DictionaryEntry kv in from_dict) {
+                var from = kv.Key;
                 Data[from] = new Dictionary<object, string>();
 
-                var to_enumerator = (IDictionaryEnumerator)ToEnumerator.Invoke(from_enumerator.Value, null);
-                if (to_enumerator == null)
-                    continue;
+                var to_dict = (IDictionary)from_dict[from];
 
-                to_enumerator.Reset();
-                while (true) {
-                    to_enumerator.MoveNext();
-
-                    object to = null;
-                    try {
-                        to = to_enumerator.Key;
-                    } catch (InvalidOperationException) {
-                        break;
-                    }
-
-                    var value = (string)to_enumerator.Value;
+                foreach (DictionaryEntry kv2 in to_dict) {
+                    var to = kv2.Key;
+                    var value = (string)kv2.Value;
 
                     Data[from][to] = value;
                 }
@@ -185,11 +84,9 @@ namespace Common.Configuration {
         }
 
         protected virtual void SaveData(object from, object to, string value) {
-            // configEntry.Value[from]
-            var abstract_from = FromData.GetValue(configEntry.Value, new object[] { from });
-
-            // configEntry.Value[from][to] = value
-            ToData.SetValue(abstract_from, value, new object[] { to });
+            var from_dict = (IDictionary)configEntry.Value;
+            var to_dict = (IDictionary)from_dict[from];
+            to_dict[to] = value;
         }
 
         protected virtual void SaveData() {
@@ -209,7 +106,7 @@ namespace Common.Configuration {
         }
 
         protected virtual void ShowDataInGridView() {
-            if (Data.Count <= 0)
+            if (Data == null || Data.Count <= 0)
                 return;
 
             bool first_row = true;
