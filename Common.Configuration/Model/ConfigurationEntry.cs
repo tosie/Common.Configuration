@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace Common.Configuration {
     public class ConfigurationEntry : INotifyPropertyChanged {

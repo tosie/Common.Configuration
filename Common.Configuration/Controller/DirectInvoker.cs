@@ -38,7 +38,7 @@ namespace Common.Configuration {
             //           - parameters.Length must be = 0 (if not null)
             Int32 method_parameters = method.GetParameters().Length;
             if ((method_parameters > 0 && parameters != null && method_parameters != parameters.Length) || (method_parameters == 0 && parameters != null && parameters.Length > 0))
-                throw new ArgumentException(string.Format("Parameter count mismatch: {0} parameters given; {1} parameters expected.", parameters.Length, method.GetParameters().Length));
+                throw new ArgumentException(string.Format("Parameter count mismatch: {0} parameters given; {1} parameters expected.", parameters.Length, method_parameters));
 
             // Create a dynamic assembly for the two types we need
             createAssembly();

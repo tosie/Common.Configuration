@@ -76,8 +76,12 @@ namespace Common.Configuration.Test.GUI {
             ControlType = ConfigurationEntry.ControlTypes.Button)]
         public String WithAButton { get; set; }
 
-        protected void WithAButtonButtonEditor(ConfigurationEntry Sender) {
-            MessageBox.Show(Sender.ControlType.ToString());
+        protected bool WithAButtonEditor(ConfigurationEntry Sender, Object Value) {
+            //MessageBox.Show(Sender.ControlType.ToString());
+            using (var form = new ValueMatrixForm()) {
+                form.ShowDialog(this);
+            }
+            return false;
         }
 
         [Configuration("Checker", 60, "Second",

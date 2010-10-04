@@ -17,7 +17,26 @@ namespace Common.Configuration {
 
         protected List<ConfigurationEntry> Data { get; private set; }
 
-        public Object BoundObject { get; protected set; }
+        protected object boundObject = null;
+
+        /// <summary>
+        /// Represents the object that this configuration is bound to.
+        /// </summary>
+        public object BoundObject {
+            get {
+                return boundObject;
+            }
+
+            set {
+                if (boundObject == value)
+                    return;
+
+                boundObject = value;
+                UpdateValues();
+            }
+        }
+
+        protected bool LoadingConfiguration { get; set; }
 
         #endregion
 
@@ -25,6 +44,7 @@ namespace Common.Configuration {
 
         public GenericConfiguration() {
             Data = new List<ConfigurationEntry>();
+            LoadingConfiguration = false;
         }
 
         #endregion
@@ -86,6 +106,33 @@ namespace Common.Configuration {
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
             return Data.GetEnumerator();
+        }
+
+        #endregion
+
+        #region Bound Object Handling
+
+        void UpdateValues() {
+            LoadingConfiguration = true;
+
+            try {
+
+                // Walk over each configuration entry that has a PropertyOfBoundObject ...
+                Data.ForEach(entry => {
+                    Type t = GetDirectType(BoundObject);
+                    PropertyInfo prop = t.GetProperty(entry.Name);
+                    if (prop == null)
+                        return;
+
+                    object value = prop.GetValue(BoundObject, null);
+                    entry.Value = value;
+                });
+
+            } finally {
+
+                LoadingConfiguration = false;
+
+            }
         }
 
         #endregion
@@ -163,6 +210,9 @@ namespace Common.Configuration {
         }
 
         void entry_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (LoadingConfiguration)
+                return;
+
             if (BoundObject == null)
                 return;
 
