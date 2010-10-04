@@ -119,6 +119,10 @@ namespace Common.Configuration {
             PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
         }
 
+        public void ValueHasChanged() {
+            RaisePropertyChanged("Value");
+        }
+
         #endregion
 
         #region Value Validators and Transformers

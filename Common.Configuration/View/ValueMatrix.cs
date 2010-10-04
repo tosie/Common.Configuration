@@ -109,43 +109,60 @@ namespace Common.Configuration {
             if (Data == null || Data.Count <= 0)
                 return;
 
-            bool first_row = true;
-
+            // Add the row header column.
             var rowheader_column = new DataGridViewTextBoxColumn();
             rowheader_column.ReadOnly = true;
             Grid.Columns.Add(rowheader_column);
+            
+            // Build up a list of columns and add them to the grid view.
+            var columns_without_rowheader = new Dictionary<object, int>();
+            foreach (KeyValuePair<object, Dictionary<object, string>> kv in Data) {
+                var from = kv.Key;
+
+                foreach (KeyValuePair<object, string> kv2 in kv.Value) {
+                    var to = kv2.Key;
+                    var value = kv2.Value;
+
+                    if (!columns_without_rowheader.ContainsKey(to)) {
+                        var column = new DataGridViewTextBoxColumn();
+                        column.Tag = to;
+                        column.HeaderText = configEntry.GetValueAsString(to);
+
+                        columns_without_rowheader[to] = Grid.Columns.Add(column);
+                    }
+                }
+            }
+
+            // Create a row template that prepares fills each cell with an empty string.
+            var row_template = new object[Grid.Columns.Count];
+            for (int i = 0; i < row_template.Length; i++) {
+                row_template[i] = "";
+            }
 
             foreach (KeyValuePair<object, Dictionary<object, string>> kv in Data) {
                 var from = kv.Key;
+
+                var rowindex = Grid.Rows.Add(row_template);
+                var row = Grid.Rows[rowindex];
 
                 var rowheader = new DataGridViewTextBoxCell();
                 rowheader.Tag = from;
                 rowheader.Style = Grid.ColumnHeadersDefaultCellStyle;
                 rowheader.Value = configEntry.GetValueAsString(from);
 
-                var row = new DataGridViewRow();
-                row.Cells.Add(rowheader);
+                row.Cells[0] = rowheader;
 
                 foreach (KeyValuePair<object, string> kv2 in kv.Value) {
                     var to = kv2.Key;
                     var value = kv2.Value;
 
-                    if (first_row) {
-                        var column = new DataGridViewTextBoxColumn();
-                        column.Tag = to;
-                        column.HeaderText = configEntry.GetValueAsString(to);
-                        Grid.Columns.Add(column);
-                    }
-
                     var cell = new DataGridViewTextBoxCell();
                     cell.Tag = new KeyValuePair<object, object>(from, to);
                     cell.Value = configEntry.GetValueAsString(value);
 
-                    row.Cells.Add(cell);
+                    var columnindex = columns_without_rowheader[to];
+                    row.Cells[columnindex] = cell;
                 }
-
-                Grid.Rows.Add(row);
-                first_row = false;
             }
         }
 
@@ -160,17 +177,6 @@ namespace Common.Configuration {
 
         #endregion
 
-        private void Grid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
-            e.FormattingApplied = false;
-
-            if (configEntry != null) {
-                try {
-                    e.Value = configEntry.GetValueAsString(e.Value);
-                    e.FormattingApplied = true;
-                } catch { }
-            }
-        }
-
         private void Grid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             if (configEntry != null) {
                 try {
@@ -179,12 +185,18 @@ namespace Common.Configuration {
 
                     if (valid) {
                         Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "";
-                        var kv = (KeyValuePair<object, object>)Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag;
-                        var from = kv.Key;
-                        var to = kv.Value;
+                        var from = Grid.Rows[e.RowIndex].Cells[0].Tag;
+                        var to = Grid.Columns[e.ColumnIndex].Tag;
 
-                        Data[from][to] = configEntry.GetValueAsString(value);
-                        SaveData(from, to, (value == null ? "" : value.ToString()));
+                        var new_value = configEntry.GetValueAsString(value);
+                        if (!Data.ContainsKey(from))
+                            Data[from] = new Dictionary<object, string>();
+
+                        if (!Data[from].ContainsKey(to) ||Data[from][to] != new_value) {
+                            Data[from][to] = new_value;
+                            SaveData(from, to, (value == null ? "" : value.ToString()));
+                            configEntry.ValueHasChanged();
+                        }
                     } else {
                         Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Ungültiger Wert";
                     }

@@ -53,7 +53,6 @@
             this.Grid.Size = new System.Drawing.Size(541, 366);
             this.Grid.TabIndex = 0;
             this.Grid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellEndEdit);
-            this.Grid.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.Grid_CellFormatting);
             // 
             // Column1
             // 
