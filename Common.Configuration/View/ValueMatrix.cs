@@ -180,11 +180,12 @@ namespace Common.Configuration {
         private void Grid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             if (configEntry != null) {
                 try {
-                    object value = Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                    var cell = Grid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    object value = cell.Value;
                     bool valid = configEntry.IsValueValid(ref value);
 
                     if (valid) {
-                        Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "";
+                        cell.ErrorText = "";
                         var from = Grid.Rows[e.RowIndex].Cells[0].Tag;
                         var to = Grid.Columns[e.ColumnIndex].Tag;
 
@@ -194,11 +195,12 @@ namespace Common.Configuration {
 
                         if (!Data[from].ContainsKey(to) ||Data[from][to] != new_value) {
                             Data[from][to] = new_value;
-                            SaveData(from, to, (value == null ? "" : value.ToString()));
+                            cell.Value = new_value;
+                            SaveData(from, to, new_value);
                             configEntry.ValueHasChanged();
                         }
                     } else {
-                        Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Ungültiger Wert";
+                        cell.ErrorText = "Ungültiger Wert";
                     }
                 } catch { }
             }
