@@ -12,18 +12,21 @@ namespace Common.Configuration.Test.GUI {
 
         static Dictionary<string, Dictionary<string, string>> dict = new Dictionary<string, Dictionary<string, string>>() {
             { "from1", new Dictionary<string, string>() {
-                { "to1.1", "test1.1" },
-                { "to1.2", "test1.2" }
+                { "from1", "" },
+                { "from2", "" }
             } },
 
             { "from2", new Dictionary<string, string>() {
-                { "to2.1", "test2.1" },
-                { "to2.2", "test2.2" }
+                { "from1", "" },
+                { "from2", "" }
             } }
         };
 
         public ValueMatrixForm() {
             InitializeComponent();
+
+            valueMatrix1.SynchronizeTwoWayAssignments = true;
+            valueMatrix1.AllowSelfToSelfAssignments = false;
         }
 
         private void ValueMatrixForm_Load(object sender, EventArgs e) {

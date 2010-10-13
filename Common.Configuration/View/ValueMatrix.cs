@@ -13,6 +13,40 @@ namespace Common.Configuration {
 
         #region Properties / Class Variables
 
+        protected bool synchronizeTwoWayAssignments = true;
+
+        [DefaultValue(true)]
+        public bool SynchronizeTwoWayAssignments {
+            get {
+                return synchronizeTwoWayAssignments;
+            }
+
+            set {
+                if (synchronizeTwoWayAssignments == value)
+                    return;
+
+                synchronizeTwoWayAssignments = value;
+                SetStateOfTwoWaySynchronization(synchronizeTwoWayAssignments);
+            }
+        }
+
+        protected bool allowSelfToSelfAssignments = false;
+
+        [DefaultValue(false)]
+        public bool AllowSelfToSelfAssignments {
+            get {
+                return allowSelfToSelfAssignments;
+            }
+
+            set {
+                if (allowSelfToSelfAssignments == value)
+                    return;
+
+                allowSelfToSelfAssignments = value;
+                SetStateOfSelfToSelfAssignment(value);
+            }
+        }
+
         protected ConfigurationEntry configEntry = null;
 
         public ConfigurationEntry ConfigEntry {
@@ -133,7 +167,7 @@ namespace Common.Configuration {
                 }
             }
 
-            // Create a row template that prepares fills each cell with an empty string.
+            // Create a row template that prepares each cell with an empty string.
             var row_template = new object[Grid.Columns.Count];
             for (int i = 0; i < row_template.Length; i++) {
                 row_template[i] = "";
@@ -164,6 +198,8 @@ namespace Common.Configuration {
                     row.Cells[columnindex] = cell;
                 }
             }
+
+            SetStateOfSelfToSelfAssignment(AllowSelfToSelfAssignments);
         }
 
         #endregion
@@ -175,7 +211,57 @@ namespace Common.Configuration {
             ShowDataInGridView();
         }
 
+        protected DataGridViewTextBoxCell FindCellOfRelation(object from, object to) {
+            for (int r = 0; r < Grid.Rows.Count; r++) {
+                var row = Grid.Rows[r];
+                if (row.Cells[0].Tag != from)
+                    continue;
+
+                var cell = FindCellOfTarget(row, to);
+                return cell;
+            }
+
+            return null;
+        }
+
+        protected DataGridViewTextBoxCell FindCellOfTarget(DataGridViewRow row, object target) {
+            // The first column is the row header column, thus start with "1" (the second column).
+            for (int column = 1; column < row.Cells.Count; column++) {
+                var cell = (DataGridViewTextBoxCell)row.Cells[column];
+                if (cell.Tag == null)
+                    continue;
+
+                var kv = (KeyValuePair<object, object>)cell.Tag;
+                var from = kv.Key;
+                var to = kv.Value;
+
+                if (to != target)
+                    continue;
+
+                return cell;
+            }
+
+            return null;
+        }
+
+        protected virtual void SetStateOfTwoWaySynchronization(bool enabled) {
+            //
+        }
+
+        protected virtual void SetStateOfSelfToSelfAssignment(bool enabled) {
+            for (int row = 0; row < Grid.Rows.Count; row++) {
+                var cell = FindCellOfTarget(Grid.Rows[row], Grid.Rows[row].Cells[0].Tag);
+                if (cell == null)
+                    continue;
+
+                cell.ReadOnly = !enabled;
+                cell.Style.BackColor = (enabled ? SystemColors.Window : SystemColors.ButtonFace);
+            }
+        }
+
         #endregion
+
+        #region GUI Events
 
         private void Grid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             if (configEntry != null) {
@@ -193,18 +279,42 @@ namespace Common.Configuration {
                         if (!Data.ContainsKey(from))
                             Data[from] = new Dictionary<object, string>();
 
-                        if (!Data[from].ContainsKey(to) ||Data[from][to] != new_value) {
+                        bool notify_about_changes = false;
+
+                        if (!Data[from].ContainsKey(to) || Data[from][to] != new_value) {
                             Data[from][to] = new_value;
                             cell.Value = new_value;
                             SaveData(from, to, new_value);
-                            configEntry.ValueHasChanged();
+                            notify_about_changes = true;
                         }
+
+                        // Two-Way Synchronization
+                        if (SynchronizeTwoWayAssignments) {
+                            // Vice-versa, _not_ "from => to"!
+
+                            if (!Data.ContainsKey(to))
+                                Data[to] = new Dictionary<object, string>();
+
+                            if (!Data[to].ContainsKey(to) || Data[to][from] != new_value) {
+                                Data[to][from] = new_value;
+                                var cell2 = FindCellOfRelation(to, from);
+                                if (cell2 != null)
+                                    cell2.Value = new_value;
+                                SaveData(to, from, new_value);
+                                notify_about_changes = true;
+                            }
+                        }
+
+                        if (notify_about_changes)
+                            configEntry.ValueHasChanged();
                     } else {
                         cell.ErrorText = "Ungültiger Wert";
                     }
                 } catch { }
             }
         }
+
+        #endregion
 
     }
 }
