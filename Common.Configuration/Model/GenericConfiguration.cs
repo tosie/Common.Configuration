@@ -10,7 +10,8 @@ using System.Xml.Serialization;
 using System.Windows.Forms;
 
 namespace Common.Configuration {
-    [XmlRoot("genericconfiguration")]
+    
+    /// <summary>Represents a set of <see cref="ConfigurationEntry"/> instances and includes helper methods.</summary>
     public class GenericConfiguration : IEnumerable {
 
         #region Properties
@@ -20,7 +21,8 @@ namespace Common.Configuration {
         protected object boundObject = null;
 
         /// <summary>
-        /// Represents the object that this configuration is bound to.
+        /// Represents the object that this configuration is bound to. This means that changes in any
+        /// configuration entry are automatically reflected to this object.
         /// </summary>
         public object BoundObject {
             get {
@@ -42,6 +44,9 @@ namespace Common.Configuration {
 
         #region Constructors / Initialization
 
+        /// <summary>
+        /// Create a new instance of this class.
+        /// </summary>
         public GenericConfiguration() {
             Data = new List<ConfigurationEntry>();
             LoadingConfiguration = false;
@@ -51,29 +56,58 @@ namespace Common.Configuration {
 
         #region List-like Members
 
+        /// <summary>
+        /// Add a new <see cref="ConfigurationEntry"/> to the set.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public ConfigurationEntry Add(ConfigurationEntry key, object value) {
             key.Value = value;
             Data.Add(key);
             return key;
         }
 
+        /// <summary>
+        /// Add a new <see cref="ConfigurationEntry"/> to the set.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public ConfigurationEntry Add(ConfigurationEntry key) {
             Data.Add(key);
             return key;
         }
 
+        /// <summary>
+        /// Check if a <see cref="ConfigurationEntry"/> has already been added to the set.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Contains(ConfigurationEntry key) {
             return Data.Contains(key);
         }
 
+        /// <summary>
+        /// Remove a <see cref="ConfigurationEntry"/> from the set.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Remove(ConfigurationEntry key) {
             return Data.Remove(key);
         }
 
+        /// <summary>
+        /// Remove all configuration entries from the set.
+        /// </summary>
         public void Clear() {
             Data.Clear();
         }
 
+        /// <summary>
+        /// Find a <see cref="ConfigurationEntry"/> by its name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ConfigurationEntry FindEntryByName(String name) {
             foreach (ConfigurationEntry item in Data) {
                 if (item.Name.Equals(name))
@@ -83,6 +117,11 @@ namespace Common.Configuration {
             return null;
         }
 
+        /// <summary>
+        /// Gets/Sets the value of a <see cref="ConfigurationEntry"/> by its name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Object this[String name] {
             get {
                 ConfigurationEntry key = FindEntryByName(name);
@@ -112,14 +151,19 @@ namespace Common.Configuration {
 
         #region Bound Object Handling
 
+        /// <summary>
+        /// Reads values of the properties of the <see cref="BoundObject"/> and assigns them to the
+        /// configuration entries in the set.
+        /// </summary>
         void UpdateValues() {
             LoadingConfiguration = true;
 
             try {
 
+                Type t = GetDirectType(BoundObject);
+
                 // Walk over each configuration entry that has a PropertyOfBoundObject ...
                 Data.ForEach(entry => {
-                    Type t = GetDirectType(BoundObject);
                     PropertyInfo prop = t.GetProperty(entry.Name);
                     if (prop == null)
                         return;
@@ -246,6 +290,11 @@ namespace Common.Configuration {
             return (string)method.Invoke(BoundObject, new object[] { Sender, Value });
         }
 
+        /// <summary>
+        /// Creates a configuration for a given object by using its properties and the <see cref="ConfigurationAttribute"/>.
+        /// </summary>
+        /// <param name="BoundObject">The object for which a set of configuration entries should be created.</param>
+        /// <returns>An instance of the <see cref="GenericConfiguration"/> class that is bound the the given object.</returns>
         public static GenericConfiguration CreateFor(Object BoundObject) {
             GenericConfiguration config = new GenericConfiguration();
             config.BoundObject = BoundObject;

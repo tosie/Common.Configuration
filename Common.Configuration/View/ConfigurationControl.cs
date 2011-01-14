@@ -9,11 +9,18 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Common.Configuration {
+
+    /// <summary>GUI editor for instances of <see cref="GenericConfiguration"/> sets.</summary>
     public partial class ConfigurationControl : UserControl {
         
         #region Properties / Class Variables
 
         protected GenericConfiguration configuration;
+
+        /// <summary>
+        /// A single instance of <see cref="GenericConfiguration"/> that should be shown on the control.
+        /// Overrides <see cref="MultipleConfigs"/> if set.
+        /// </summary>
         public GenericConfiguration Configuration {
             get {
                 return configuration;
@@ -27,6 +34,11 @@ namespace Common.Configuration {
         }
 
         protected List<GenericConfiguration> multipleConfigs;
+
+        /// <summary>
+        /// Multiple instances of <see cref="GenericConfiguration"/> that should be shown on the control.
+        /// Overrides <see cref="Configuration"/> is set.
+        /// </summary>
         public List<GenericConfiguration> MultipleConfigs {
             get {
                 return multipleConfigs;
@@ -39,6 +51,11 @@ namespace Common.Configuration {
             }
         }
 
+        /// <summary>
+        /// If true all changes of the controls are immediately reflected back to their corresponding
+        /// <see cref="ConfigurationEntry"/>. If false a call to <see cref="Save"/> is required to
+        /// assign the new values entered by a user to the entries.
+        /// </summary>
         [DefaultValue(false)]
         public Boolean AutoSave { get; set; }
 
@@ -51,6 +68,9 @@ namespace Common.Configuration {
 
         #region Constructors / Initialization
 
+        /// <summary>
+        /// Create a new instance of this class.
+        /// </summary>
         public ConfigurationControl() {
             AutoSave = false;
 
@@ -309,7 +329,10 @@ namespace Common.Configuration {
             control.AutoEllipsis = true;
 
             // Content
-            control.Text = Entry.GetValueAsString(Entry.Value, "<Bitte auswählen>");
+            var default_text = "<Bitte auswählen>";
+            control.Text = Entry.GetValueAsString(Entry.Value, default_text);
+            if (String.IsNullOrEmpty(control.Text)) // Empty strings hide the label and the user will not
+                control.Text = default_text;        // be able to click on it anymore -- catch that here.
             control.LinkClicked += new LinkLabelLinkClickedEventHandler(linklabel_LinkClicked);
 
             return control;
@@ -676,6 +699,10 @@ namespace Common.Configuration {
             }
         }
 
+        /// <summary>
+        /// Stores all values of the GUI controls back to their respective <see cref="ConfigurationEntry"/>.
+        /// Calling this method is not required when <see cref="AutoSave"/> is true.
+        /// </summary>
         public void Save() {
             Saving = true;
 

@@ -8,23 +8,89 @@ using System.Windows.Forms;
 using System.Reflection;
 
 namespace Common.Configuration {
+
+    /// <summary>Class that represents a single element which can be configured.</summary>
     public class ConfigurationEntry : INotifyPropertyChanged {
 
         #region Properties
 
-        public String Name { get; set; } // short name
-        public String Text { get; set; } // text to show on a form
+        /// <summary>Short name of the configuration entry.</summary>
+        public String Name { get; set; }
+
+        /// <summary>Short text to describe the configuration entry.</summary>
+        public String Text { get; set; }
+
+        /// <summary>Text that describes the configuration entry in a more detailed fashion.</summary>
         public String SubText { get; set; }
+
+        /// <summary>Using this the order of all configuration entries is determined.</summary>
         public Int32 SortKey { get; set; }
+
+        /// <summary>Configuration entries are grouped using this.</summary>
         public Object GroupKey { get; set; }
-        public Object Tag { get; set; }
-        public Boolean ReadOnly { get; set; }
-        public Object Minimum { get; set; }
-        public Object Maximum { get; set; }
-        public enum ControlTypes { None, TextBox, ComboBox, CheckBox, Label, Button, GenericConfiguration, Slider, File, Directory, MultiLineTextBox, ComboBoxAsLinkLabel, ButtonAsLinkLabel };
+
+        /// <summary>Set of GUI controls that can be used to edit a configuration entry.</summary>
+        public enum ControlTypes {
+            /// <summary>Entry cannot be edited via GUI.</summary>
+            None,
+
+            /// <summary>Show a single line textbox.</summary>
+            TextBox,
+
+            /// <summary>Show a combobox. Remember to define the *PossibleValues property when using the <see cref="ConfigurationAttribute"/>.</summary>
+            ComboBox,
+
+            /// <summary>Show a checkbox.</summary>
+            CheckBox,
+
+            /// <summary>Show a label. Editing will not be possible.</summary>
+            Label,
+
+            /// <summary>Show a button. The *Editor method will be called upon a button click when using the <see cref="ConfigurationAttribute"/>.</summary>
+            Button,
+
+            /// <summary>If the entry's value type is of <see cref="GenericConfiguration"/> use this
+            /// to show a button to edit that configuration.</summary>
+            GenericConfiguration,
+
+            /// <summary>Show a slider.</summary>
+            Slider,
+
+            /// <summary>Show a file selector textbox.</summary>
+            File,
+
+            /// <summary>Show a directory selector textbox.</summary>
+            Directory,
+
+            /// <summary>Show a multiline textbox.</summary>
+            MultiLineTextBox,
+
+            /// <summary>Show a link label that opens a menu containing combobox items whenever it is clicked.</summary>
+            ComboBoxAsLinkLabel,
+
+            /// <summary>Show a link label that raises the *Editor method (when using the <see cref="ConfigurationAttribute"/>) or the <see cref="Editor"/> event whenever it is clicked.</summary>
+            ButtonAsLinkLabel
+        };
+
+        /// <summary>Defines the GUI control to be used when editing a configuration entry.</summary>
         public ControlTypes ControlType { get; set; }
-        
+
+        /// <summary>Custom object assigned to the configuration entry. Is not used internally.</summary>
+        public Object Tag { get; set; }
+
+        /// <summary>If true the GUI control representing the property will be disabled and any user input is prohibited.</summary>
+        public Boolean ReadOnly { get; set; }
+
+        /// <summary>Minimum value that can be accepted. Used by validators.</summary>
+        public Object Minimum { get; set; }
+
+        /// <summary>Maximum value that can be accepted. Used by validators.</summary>
+        public Object Maximum { get; set; }
+
+        /// <summary>Holds the current value of the configuration entry. Should be accessed using the <see cref="Value"/> property.</summary>
         protected Object value;
+
+        /// <summary>Current value of the configuration entry. Raises the <see cref="PropertyChanged"/> event whenever the value changes.</summary>
         public Object Value {
             get {
                 return value;
@@ -43,14 +109,26 @@ namespace Common.Configuration {
             }
         }
 
+        /// <summary>Returns the current value as a formatted string.</summary>
         public String ValueAsString {
             get { return GetValueAsString(value); }
         }
 
+        /// <summary>
+        /// Returns the given value as a formatted string.
+        /// </summary>
+        /// <param name="Value">The value to format.</param>
         public String GetValueAsString(Object Value) {
             return GetValueAsString(Value, "");
         }
 
+        /// <summary>
+        /// Returns the given value as a formatted string using the <paramref name="NullString"/>
+        /// when the <paramref name="Value"/> is null.
+        /// </summary>
+        /// <param name="Value">The value to format.</param>
+        /// <param name="NullString">The string to show when <paramref name="Value"/> is null.</param>
+        /// <returns></returns>
         public String GetValueAsString(Object Value, String NullString) {
             String result = "";
 
@@ -64,8 +142,26 @@ namespace Common.Configuration {
 
         #region Events
 
+        #region PossibleValues
+
+        /// <summary>
+        /// Defines the signature of the <see cref="QueryPossibleValues"/> event.
+        /// </summary>
+        /// <param name="Sender">Configuration entry for which to return an array of possible values.</param>
+        /// <param name="PossibleValues">The parameter that receives the array of possible values.</param>
         public delegate void QueryPossibleValuesEvent(ConfigurationEntry Sender, out Object[] PossibleValues);
+
+        /// <summary>
+        /// Event that is raised whenever a list of valid and accepted values for the configuration entry is needed
+        /// (e.g. when showing a combobox to edit the configuration entry).
+        /// </summary>
         public event QueryPossibleValuesEvent QueryPossibleValues;
+
+        /// <summary>
+        /// Helper method that queries handlers of the <see cref="QueryPossibleValues"/> event and returns the array
+        /// of possible values.
+        /// </summary>
+        /// <returns></returns>
         public Object[] GetPossibleValues() {
             if (QueryPossibleValues == null)
                 return new Object[] { };
@@ -75,8 +171,28 @@ namespace Common.Configuration {
             return values;
         }
 
+        #endregion
+
+        #region Validate
+
+        /// <summary>
+        /// Defines the signature for the <see cref="ValidateValue"/> event.
+        /// </summary>
+        /// <param name="Sender">Configuration entry for which a value should be validated.</param>
+        /// <param name="Value">The value to validate. Passed by reference and may be changed by event handlers.</param>
+        /// <param name="Valid">Set to true if the value is valid, otherwise false.</param>
         public delegate void ValidateEvent(ConfigurationEntry Sender, ref Object Value, out Boolean Valid);
+
+        /// <summary>
+        /// Event used to validate values for the configuration entry.
+        /// </summary>
         public event ValidateEvent ValidateValue;
+
+        /// <summary>
+        /// Determines if a given value is valid or not by using handlers of the <see cref="ValidateValue"/> event.
+        /// </summary>
+        /// <param name="Value">The value to validate. Passed by reference and may be changed by a call to this method.</param>
+        /// <returns>True if the value is valid, false otherwise.</returns>
         public Boolean IsValueValid(ref Object Value) {
             if (ValidateValue == null)
                 return true;
@@ -86,8 +202,28 @@ namespace Common.Configuration {
             return result;
         }
 
+        #endregion
+
+        #region Editor
+
+        /// <summary>
+        /// Defines the signature of the <see cref="Editor"/> event.
+        /// </summary>
+        /// <param name="Sender">Configuration entry for which to show an editor.</param>
+        /// <param name="Owner">Window that acts as owner of any newly created windows by the event handlers.</param>
+        /// <returns>True if the editor changed the value, false otherwise.</returns>
         public delegate Boolean EditorHandler(ConfigurationEntry Sender, IWin32Window Owner);
+
+        /// <summary>
+        /// Event that is called when an advanced window to edit the configuration entry should be shown.
+        /// </summary>
         public event EditorHandler Editor;
+
+        /// <summary>
+        /// Uses the <see cref="Editor"/> event to show an advanced editor window to modify the configuration entry.
+        /// </summary>
+        /// <param name="Owner">Window that acts as owner of newly created windows.</param>
+        /// <returns>True if the value changed, false otherwise.</returns>
         public Boolean RaiseEditor(IWin32Window Owner) {
             if (Editor == null)
                 return false;
@@ -95,8 +231,29 @@ namespace Common.Configuration {
             return Editor(this, Owner);
         }
 
+        #endregion
+
+        #region FormatValue
+
+        /// <summary>
+        /// Defines the signature of the <see cref="FormatValue"/> event.
+        /// </summary>
+        /// <param name="Sender">The configuration entry for which a value should be formatted as a string.</param>
+        /// <param name="Value">The value to be formatted.</param>
+        /// <returns>A formatted string representing the <paramref name="Value"/>.</returns>
         public delegate String FormatValueHandler(ConfigurationEntry Sender, Object Value);
+
+        /// <summary>
+        /// Raised whenever the value of a configuration entry needs to be represented as a string.
+        /// </summary>
         public event FormatValueHandler FormatValue;
+
+        /// <summary>
+        /// Formats a value to a string representation using the <see cref="FormatValue"/> event.
+        /// </summary>
+        /// <param name="Value">The value to be formatted.</param>
+        /// <param name="ValueAsString">The string representation of the given value.</param>
+        /// <returns>True if the value was formatted successfully, otherwise false.</returns>
         protected Boolean RaiseFormatValue(Object Value, out String ValueAsString) {
             ValueAsString = "";
             if (FormatValue == null)
@@ -108,8 +265,14 @@ namespace Common.Configuration {
 
         #endregion
 
+        #endregion
+
         #region INotifyPropertyChanged Members
 
+        /// <summary>
+        /// Raised whenever the value of a property has changed. Currently this is used
+        /// exclusively for the <see cref="Value"/> property.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(String PropertyName) {
@@ -119,6 +282,9 @@ namespace Common.Configuration {
             PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
         }
 
+        /// <summary>
+        /// Raises the <see cref="PropertyChanged"/> event for the <see cref="Value"/> property.
+        /// </summary>
         public void ValueHasChanged() {
             RaisePropertyChanged("Value");
         }
@@ -127,6 +293,12 @@ namespace Common.Configuration {
 
         #region Value Validators and Transformers
 
+        /// <summary>
+        /// Tries to convert everything into an Int32.
+        /// </summary>
+        /// <param name="Value">The value to be converted.</param>
+        /// <param name="Default">The value to use when the given <paramref name="Value"/> cannot be converted.</param>
+        /// <returns>The converted value.</returns>
         public static Int32 ToInt32(Object Value, Int32 Default) {
             if (Value == null)
                 return Default;
@@ -140,6 +312,12 @@ namespace Common.Configuration {
             return temp_value;
         }
 
+        /// <summary>
+        /// Tries to convert everything into an Double.
+        /// </summary>
+        /// <param name="Value">The value to be converted.</param>
+        /// <param name="Default">The value to use when the given <paramref name="Value"/> cannot be converted.</param>
+        /// <returns>The converted value.</returns>
         public static Double ToDouble(Object Value, Double Default) {
             if (Value == null)
                 return Default;
@@ -153,6 +331,12 @@ namespace Common.Configuration {
             return temp_value;
         }
 
+        /// <summary>
+        /// Generic validator for Int32 values. Includes constraint checking by respecting <see cref="Minimum"/> and <see cref="Maximum"/> values.
+        /// </summary>
+        /// <param name="Sender">The configuration entry for which the given <paramref name="Value"/> should be validated.</param>
+        /// <param name="Value">The value to validate.</param>
+        /// <param name="Valid">True if the value is valid or has been converted into a valid value, otherwise false.</param>
         public static void ValidateInt32Value(ConfigurationEntry Sender, ref object Value, out bool Valid) {
             Valid = false;
 
@@ -176,6 +360,13 @@ namespace Common.Configuration {
                 Value = temp_value;
         }
 
+
+        /// <summary>
+        /// Generic validator for Double values. Includes constraint checking by respecting <see cref="Minimum"/> and <see cref="Maximum"/> values.
+        /// </summary>
+        /// <param name="Sender">The configuration entry for which the given <paramref name="Value"/> should be validated.</param>
+        /// <param name="Value">The value to validate.</param>
+        /// <param name="Valid">True if the value is valid or has been converted into a valid value, otherwise false.</param>
         public static void ValidateDoubleValue(ConfigurationEntry Sender, ref object Value, out bool Valid) {
             Valid = false;
 
@@ -199,6 +390,12 @@ namespace Common.Configuration {
                 Value = temp_value;
         }
 
+        /// <summary>
+        /// Generic validator for Boolean values.
+        /// </summary>
+        /// <param name="Sender">The configuration entry for which the given <paramref name="Value"/> should be validated.</param>
+        /// <param name="Value">The value to validate.</param>
+        /// <param name="Valid">True if the value is valid or has been converted into a valid value, otherwise false.</param>
         public static void ValidateBooleanValue(ConfigurationEntry Sender, ref object Value, out bool Valid) {
             Valid = false;
 
@@ -216,6 +413,12 @@ namespace Common.Configuration {
             }
         }
 
+        /// <summary>
+        /// Generic validator for files. Checks a file exists.
+        /// </summary>
+        /// <param name="Sender">The configuration entry for which the given <paramref name="Value"/> should be validated.</param>
+        /// <param name="Value">The value to validate.</param>
+        /// <param name="Valid">True if the value is valid or has been converted into a valid value, otherwise false.</param>
         public static void ValidateFileExists(ConfigurationEntry Sender, ref object Value, out bool Valid) {
             Valid = false;
             if (Value == null)
@@ -232,6 +435,12 @@ namespace Common.Configuration {
             Valid = File.Exists(val);
         }
 
+        /// <summary>
+        /// Generic validator for directories. Checks if a directory exists.
+        /// </summary>
+        /// <param name="Sender">The configuration entry for which the given <paramref name="Value"/> should be validated.</param>
+        /// <param name="Value">The value to validate.</param>
+        /// <param name="Valid">True if the value is valid or has been converted into a valid value, otherwise false.</param>
         public static void ValidateDirectoryExists(ConfigurationEntry Sender, ref object Value, out bool Valid) {
             Valid = false;
             if (Value == null)
@@ -251,4 +460,5 @@ namespace Common.Configuration {
         #endregion
 
     }
+
 }
