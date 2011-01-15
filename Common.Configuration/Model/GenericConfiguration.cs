@@ -8,6 +8,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Xml.Serialization;
 using System.Windows.Forms;
+using System.Xml;
+using System.IO;
+using System.IO.Compression;
 
 namespace Common.Configuration {
     
@@ -50,6 +53,104 @@ namespace Common.Configuration {
         public GenericConfiguration() {
             Data = new List<ConfigurationEntry>();
             LoadingConfiguration = false;
+        }
+
+        #endregion
+
+        #region Serialization / Deserialization
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string Serialize() {
+            // Serialize the data and compress the resulting string.
+            using (var zipped = new MemoryStream()) {
+                using (var s = new GZipStream(zipped, CompressionMode.Compress)) {
+                    using (var writer = new XmlTextWriter(s, Encoding.UTF8)) {
+                        
+                        writer.WriteStartElement("configuration");
+
+                        foreach (ConfigurationEntry entry in this) {
+                            WriteEntryToXml(writer, entry);
+                        }
+
+                        writer.WriteEndElement();
+
+                    }
+                }
+
+                return Convert.ToBase64String(zipped.GetBuffer());
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        public void Deserialize(string data) {
+            // If there is nothing to deserialize, return a newly created instance of the target type.
+            if (String.IsNullOrEmpty(data))
+                return;
+
+            // Decompress and deserialize the data.
+            byte[] decoded_buffer = Convert.FromBase64String(data);
+            using (var zipped = new MemoryStream(decoded_buffer)) {
+                using (var s = new GZipStream(zipped, CompressionMode.Decompress)) {
+                    using (var reader = new XmlTextReader(s)) {
+
+                        if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "configuration") {
+                            if (reader.ReadToDescendant("entry")) {
+                                var depth = reader.Depth;
+
+                                ReadEntryFromXml(reader);
+
+                                var shouldContinue = true;
+                                while (shouldContinue && reader.Depth == depth)
+                                    shouldContinue = ReadEntryFromXml(reader);
+                            }
+
+                            reader.Read();
+                        }
+
+                    }
+                }
+            }
+        }
+
+        void WriteEntryToXml(XmlWriter writer, ConfigurationEntry entry) {
+            // <entry name="%entry.Name%"><![CDATA[%entry.Serialize()%]]></entry>
+
+            writer.WriteStartElement("entry");
+
+            writer.WriteAttributeString("name", entry.Name);
+            writer.WriteCData(entry.Serialize());
+
+            writer.WriteEndElement();
+        }
+
+        bool ReadEntryFromXml(XmlReader reader) {
+            if (reader.LocalName != "entry")
+                return false;
+
+            // Read the configuration entry's name
+            if (!reader.MoveToAttribute("name"))
+                return true;
+
+            var name = reader.Value;
+
+            // Make sure a configuration entry with the given name exists
+            var entry = FindEntryByName(name);
+            if (entry == null)
+                return true;
+
+            // Read the value
+            reader.MoveToElement();
+            var value = reader.ReadElementContentAsString();
+
+            entry.Deserialize(value);
+
+            return true;
         }
 
         #endregion
@@ -208,7 +309,11 @@ namespace Common.Configuration {
 
             entry.Name = Property.Name;
             attr.ApplyToConfigurationEntry(entry);
-            entry.Value = Property.GetValue(BoundObject, null);
+
+            if (BoundObject == null)
+                entry.Value = null;
+            else
+                entry.Value = Property.GetValue(BoundObject, null);
 
             entry.PropertyChanged += new PropertyChangedEventHandler(entry_PropertyChanged);
             entry.QueryPossibleValues += new ConfigurationEntry.QueryPossibleValuesEvent(entry_QueryPossibleValues);
@@ -302,6 +407,25 @@ namespace Common.Configuration {
             Type t = GetDirectType(BoundObject);
             foreach (PropertyInfo prop in t.GetProperties()) {
                 config.AddByPropertyWithAttribute(BoundObject, prop);
+            }
+
+            return config;
+        }
+
+        /// <summary>
+        /// Creates a configuration for a given type. The type must be a class.
+        /// </summary>
+        /// <param name="type">The type that defines the configuration entries.</param>
+        /// <returns>An instance of the <see cref="GenericConfiguration"/> class that contains the configuration entries as defined by the given type.</returns>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="type"/> is not a class type.</exception>
+        public static GenericConfiguration CreateFor(Type type) {
+            if (!type.IsClass)
+                throw new ArgumentException("The passed type must be a class.", "type");
+
+            GenericConfiguration config = new GenericConfiguration();
+
+            foreach (PropertyInfo prop in type.GetProperties()) {
+                config.AddByPropertyWithAttribute(null, prop);
             }
 
             return config;

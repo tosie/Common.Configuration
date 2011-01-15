@@ -6,16 +6,18 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Common.Configuration {
 
     /// <summary>Class that represents a single element which can be configured.</summary>
+    [DebuggerDisplay("ConfigurationEntry: {Name}, Value = {Value}")]
     public class ConfigurationEntry : INotifyPropertyChanged {
 
         #region Properties
 
         /// <summary>Short name of the configuration entry.</summary>
-        public String Name { get; set; }
+        public String Name { get; set; } // TODO: Must not contain a quote. Otherwise there will be problems with the serialization. Enforce the no-quote-allowed rule here.
 
         /// <summary>Short text to describe the configuration entry.</summary>
         public String Text { get; set; }
@@ -291,6 +293,35 @@ namespace Common.Configuration {
 
         #endregion
 
+        #region Serialization / Deserialization
+
+        /// <summary>
+        /// Converts the <see cref="Value"/> to a string that can be re-converted by <see cref="Deserialize"/>.
+        /// </summary>
+        /// <returns></returns>
+        public string Serialize() {
+            if (Value == null)
+                return "";
+            else
+                return Value.ToString();
+        }
+
+        /// <summary>
+        /// Deserializes a string serialized by a call to (<seealso cref="Serialize"/>) and assigns it to the <see cref="Value"/> property..
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>True if successful, false otherwise.</returns>
+        public bool Deserialize(string data) {
+            try {
+                Value = data;
+                return true;
+            } catch (ArgumentException) {
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Value Validators and Transformers
 
         /// <summary>
@@ -399,7 +430,7 @@ namespace Common.Configuration {
         public static void ValidateBooleanValue(ConfigurationEntry Sender, ref object Value, out bool Valid) {
             Valid = false;
 
-            if (Value == null) {
+            if (Value == null || (Value is String && (String)Value == "")) {
                 Value = false;
                 Valid = true;
                 return;
