@@ -121,7 +121,7 @@ namespace Common.Configuration.Test.GUI {
 
         private void MainForm_Load(object sender, EventArgs e) {
             // Set up default values
-            NewName = "Mika";
+            NewName = "Common.Configuration Test";
             Description = "Somebody";
             Option = "Option 2";
             OptionLink = "Option 3";
