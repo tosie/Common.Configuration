@@ -9,8 +9,8 @@ namespace Common.Configuration {
     /// The profiler class helps in profiling code sections. It outputs the time required to code completion and memory used before and afterwads.
     /// </summary>
     /// <example>
-    /// using (new Profiler()) {
-    ///   // TODO: Add code here
+    /// using (new Profiler(/* Add output handler here */)) {
+    ///   // Add code here
     /// }
     /// </example>
     public class Profiler : IDisposable {
